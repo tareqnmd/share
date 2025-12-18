@@ -1,0 +1,60 @@
+import { NextAuthOptions, DefaultSession } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import connectDB from "./db";
+import User from "@/models/User";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+    } & DefaultSession["user"];
+  }
+}
+
+export const authOptions: NextAuthOptions = {
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
+  callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google") {
+        await connectDB();
+        try {
+          const existingUser = await User.findOne({ email: user.email });
+          if (!existingUser) {
+            await User.create({
+              name: user.name || "User",
+              email: user.email!,
+              image: user.image || "",
+              providerId: account.providerAccountId,
+              role: "user",
+            });
+          }
+          return true;
+        } catch (error) {
+          console.error("Error saving user", error);
+          return false;
+        }
+      }
+      return true;
+    },
+    async session({ session }) {
+        if (session.user?.email) {
+             await connectDB();
+             const dbUser = await User.findOne({ email: session.user.email });
+             if (dbUser) {
+                 session.user.id = dbUser._id.toString();
+                 session.user.role = dbUser.role;
+             }
+        }
+        return session;
+    },
+  },
+  session: {
+      strategy: "jwt",
+  }
+};
