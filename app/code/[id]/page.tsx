@@ -10,35 +10,43 @@ import { AppRoutes, FileVisibility } from "@/types/enums";
 export default async function CodePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     
-    await connectDB();
-    let file;
     try {
-        file = await CodeFile.findById(id).populate('createdBy', 'name email _id');
-    } catch {
-        notFound();
-    }
-    
-    if (!file) notFound();
-
-    const session = await getServerSession(authOptions);
-    
-    if (file.visibility === FileVisibility.PRIVATE) {
-        if (!session || !session.user) redirect(AppRoutes.HOME);
-        if (file.createdBy._id.toString() !== session.user.id) {
-             redirect(AppRoutes.HOME);
+        await connectDB();
+        let file;
+        try {
+            file = await CodeFile.findById(id).populate('createdBy', 'name email _id');
+        } catch {
+            notFound();
         }
-    }
+        
+        if (!file) notFound();
 
-    let canEdit = false;
-    if (session && session.user) {
-        canEdit = await canEditFile(session.user.id, id);
-    }
+        const session = await getServerSession(authOptions);
+        
+        if (file.visibility === FileVisibility.PRIVATE) {
+            if (!session || !session.user) redirect(AppRoutes.HOME);
+            if (file.createdBy._id.toString() !== session.user.id) {
+                 redirect(AppRoutes.HOME);
+            }
+        }
 
-    return (
-        <FileEditor 
-            file={JSON.parse(JSON.stringify(file))}
-            canEdit={canEdit}
-            currentUserId={session?.user?.id}
-        />
-    );
+        let canEdit = false;
+        if (session && session.user) {
+            canEdit = await canEditFile(session.user.id, id);
+        }
+
+        return (
+            <FileEditor 
+                file={JSON.parse(JSON.stringify(file))}
+                canEdit={canEdit}
+                currentUserId={session?.user?.id}
+            />
+        );
+    } catch (error) {
+        // If it's a redirect or notFound error, re-throw it so Next.js handles it
+        if ((error as any)?.digest?.startsWith('NEXT_REDIRECT') || (error as any)?.digest?.startsWith('NEXT_NOT_FOUND')) {
+            throw error;
+        }
+        throw new Error("Failed to load code file");
+    }
 }
