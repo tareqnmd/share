@@ -22,7 +22,6 @@ export default async function CodePage({ params }: { params: Promise<{ id: strin
 
     const session = await getServerSession(authOptions);
     
-    // Check Read Permission
     if (file.visibility === FileVisibility.PRIVATE) {
         if (!session || !session.user) redirect(AppRoutes.HOME);
         if (file.createdBy._id.toString() !== session.user.id) {
@@ -30,7 +29,6 @@ export default async function CodePage({ params }: { params: Promise<{ id: strin
         }
     }
 
-    // Check Edit Permission
     let canEdit = false;
     if (session && session.user) {
         canEdit = await canEditFile(session.user.id, id);

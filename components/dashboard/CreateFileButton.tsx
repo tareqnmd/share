@@ -12,7 +12,6 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
     const handleCreate = () => {
         startTransition(async () => {
             try {
-                // Default new file
                 const id = await createCodeFile({
                     title: "Untitled",
                     language: "javascript",

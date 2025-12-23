@@ -22,10 +22,8 @@ export async function canEditFile(userId: string, fileId: string): Promise<boole
   const file = await CodeFile.findById(fileId);
   if (!file) return false;
 
-  // Owner can always edit
   if (file.createdBy.toString() === userId) return true;
 
-  // Collaborative public files can be edited by any authenticated user
   if (file.visibility === FileVisibility.PUBLIC && file.editMode === FileEditMode.COLLABORATIVE) return true;
 
   return false;

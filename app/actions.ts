@@ -34,8 +34,6 @@ export async function createCodeFile(data: CodeFileInput) {
 }
 
 export async function updateCodeFile(id: string, content: string) {
-    // Specialized for editor autosave/save
-    // Only content
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       throw new Error("Unauthorized");
