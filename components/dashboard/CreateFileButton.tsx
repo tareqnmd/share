@@ -4,6 +4,7 @@ import { createCodeFile } from "@/app/actions";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AppRoutes, FileVisibility, FileEditMode } from "@/types/enums";
+import { LANGUAGE_OPTIONS } from "@/lib/constants";
 
 export default function CreateFileButton({ disabled }: { disabled: boolean }) {
     const [isPending, startTransition] = useTransition();
@@ -14,7 +15,7 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
             try {
                 const id = await createCodeFile({
                     title: "Untitled",
-                    language: "javascript",
+                    language: LANGUAGE_OPTIONS[0].value,
                     content: "// Start coding...",
                     visibility: FileVisibility.PUBLIC,
                     editMode: FileEditMode.OWNER
