@@ -5,14 +5,15 @@ import CodeEditor from "./CodeEditor";
 import { updateCodeFile, updateCodeFileSettings, deleteCodeFile } from "@/app/actions";
 import { useRouter } from "next/navigation";
 import { CodeFileInput } from "@/utils/validations";
+import { AppRoutes, FileVisibility, FileEditMode } from "@/types/enums";
 
 interface FileProps {
     _id: string;
     title: string;
     content: string;
     language: string;
-    visibility: "public" | "private";
-    editMode: "owner" | "collaborative";
+    visibility: FileVisibility;
+    editMode: FileEditMode;
     createdBy: {
         _id: string;
         name: string;
@@ -69,7 +70,7 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
         startDeleteTransition(async () => {
              try {
                  await deleteCodeFile(file._id);
-                 router.push('/dashboard');
+                 router.push(AppRoutes.DASHBOARD);
              } catch {
                  alert("Failed to delete");
              }
@@ -117,20 +118,20 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
                             
                             <select 
                                 value={visibility} 
-                                onChange={(e) => handleSettingsUpdate({ visibility: e.target.value as "public" | "private" })}
+                                onChange={(e) => handleSettingsUpdate({ visibility: e.target.value as FileVisibility })}
                                 className="border rounded p-1 text-sm"
                             >
-                                <option value="public">Public</option>
-                                <option value="private">Private</option>
+                                <option value={FileVisibility.PUBLIC}>Public</option>
+                                <option value={FileVisibility.PRIVATE}>Private</option>
                             </select>
 
                             <select 
                                 value={editMode} 
-                                onChange={(e) => handleSettingsUpdate({ editMode: e.target.value as "owner" | "collaborative" })}
+                                onChange={(e) => handleSettingsUpdate({ editMode: e.target.value as FileEditMode })}
                                 className="border rounded p-1 text-sm"
                             >
-                                <option value="owner">Owner Only</option>
-                                <option value="collaborative">Collaborative</option>
+                                <option value={FileEditMode.OWNER}>Owner Only</option>
+                                <option value={FileEditMode.COLLABORATIVE}>Collaborative</option>
                             </select>
                             
                             <button 

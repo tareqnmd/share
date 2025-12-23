@@ -5,6 +5,7 @@ import CodeFile from "@/models/CodeFile";
 import { redirect } from "next/navigation";
 import CreateFileButton from "@/components/dashboard/CreateFileButton";
 import Link from "next/link";
+import { UserRole, AppRoutes, FileVisibility } from "@/types/enums";
 
 async function getFiles(userId: string) {
     await connectDB();
@@ -15,12 +16,12 @@ async function getFiles(userId: string) {
 export default async function Dashboard() {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
-        redirect('/');
+        redirect(AppRoutes.HOME);
     }
     
     const files = await getFiles(session.user.id);
     const fileCount = files.length;
-    const isUser = session.user.role === 'user';
+    const isUser = session.user.role === UserRole.USER;
     const limit = 5;
 
     return (
@@ -44,10 +45,10 @@ export default async function Dashboard() {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {files.map((file) => (
-                    <Link href={`/code/${file._id}`} key={file._id.toString()} className="block p-6 border rounded-lg hover:shadow-md transition-shadow bg-white">
+                    <Link href={`${AppRoutes.CODE}/${file._id}`} key={file._id.toString()} className="block p-6 border rounded-lg hover:shadow-md transition-shadow bg-white">
                         <div className="flex justify-between items-start mb-2">
                              <h3 className="font-bold text-lg truncate">{file.title}</h3>
-                             <span className={`text-xs px-2 py-1 rounded-full ${file.visibility === 'public' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                             <span className={`text-xs px-2 py-1 rounded-full ${file.visibility === FileVisibility.PUBLIC ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                                 {file.visibility}
                              </span>
                         </div>

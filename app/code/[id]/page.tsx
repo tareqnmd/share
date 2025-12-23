@@ -5,6 +5,7 @@ import CodeFile from "@/models/CodeFile";
 import { notFound, redirect } from "next/navigation";
 import FileEditor from "@/components/editor/FileEditor";
 import { canEditFile } from "@/lib/permissions";
+import { AppRoutes, FileVisibility } from "@/types/enums";
 
 export default async function CodePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -22,10 +23,10 @@ export default async function CodePage({ params }: { params: Promise<{ id: strin
     const session = await getServerSession(authOptions);
     
     // Check Read Permission
-    if (file.visibility === 'private') {
-        if (!session || !session.user) redirect('/');
+    if (file.visibility === FileVisibility.PRIVATE) {
+        if (!session || !session.user) redirect(AppRoutes.HOME);
         if (file.createdBy._id.toString() !== session.user.id) {
-             redirect('/');
+             redirect(AppRoutes.HOME);
         }
     }
 

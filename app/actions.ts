@@ -7,6 +7,7 @@ import CodeFile from "@/models/CodeFile";
 import { codeFileSchema, CodeFileInput } from "@/utils/validations";
 import { canCreateFile, canEditFile } from "@/lib/permissions";
 import { revalidatePath } from "next/cache";
+import { AppRoutes } from "@/types/enums";
 
 export async function createCodeFile(data: CodeFileInput) {
   const session = await getServerSession(authOptions);
@@ -28,7 +29,7 @@ export async function createCodeFile(data: CodeFileInput) {
     createdBy: session.user.id,
   });
 
-  revalidatePath('/dashboard');
+  revalidatePath(AppRoutes.DASHBOARD);
   return newFile._id.toString();
 }
 
@@ -46,7 +47,7 @@ export async function updateCodeFile(id: string, content: string) {
     }
   
     await CodeFile.findByIdAndUpdate(id, { content });
-    revalidatePath(`/code/${id}`);
+    revalidatePath(`${AppRoutes.CODE}/${id}`);
 }
 
 export async function updateCodeFileSettings(id: string, data: Partial<CodeFileInput>) {
@@ -63,8 +64,8 @@ export async function updateCodeFileSettings(id: string, data: Partial<CodeFileI
   const validated = codeFileSchema.partial().parse(data);
 
   await CodeFile.findByIdAndUpdate(id, validated);
-  revalidatePath(`/code/${id}`);
-  revalidatePath('/dashboard');
+  revalidatePath(`${AppRoutes.CODE}/${id}`);
+  revalidatePath(AppRoutes.DASHBOARD);
 }
 
 export async function deleteCodeFile(id: string) {
@@ -83,6 +84,5 @@ export async function deleteCodeFile(id: string) {
   }
   
   await CodeFile.findByIdAndDelete(id);
-  revalidatePath('/dashboard');
+  revalidatePath(AppRoutes.DASHBOARD);
 }
-

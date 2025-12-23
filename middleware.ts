@@ -1,4 +1,5 @@
 import { withAuth } from "next-auth/middleware";
+import { AppRoutes } from "@/types/enums";
 
 export default withAuth({
   callbacks: {
@@ -6,5 +7,4 @@ export default withAuth({
   },
 });
 
-export const config = { matcher: ["/dashboard"] };
-
+export const config = { matcher: [AppRoutes.DASHBOARD] };

@@ -1,5 +1,6 @@
 import SignIn from '@/components/shared/SignIn';
 import { authOptions } from '@/lib/auth';
+import { AppRoutes } from '@/types/enums';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 
@@ -16,7 +17,7 @@ export default async function Home() {
 			</p>
 			{session ? (
 				<Link
-					href="/public"
+					href={AppRoutes.PUBLIC_FILES}
 					className="border border-zinc-300 px-6 py-3 rounded-lg font-medium transition-colors"
 				>
 					Create a new file

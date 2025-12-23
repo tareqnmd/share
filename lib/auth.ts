@@ -2,12 +2,13 @@ import { NextAuthOptions, DefaultSession } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import connectDB from "./db";
 import User from "@/models/User";
+import { UserRole } from "@/types/enums";
 
 declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      role: string;
+      role: UserRole;
     } & DefaultSession["user"];
   }
 }
@@ -31,7 +32,7 @@ export const authOptions: NextAuthOptions = {
               email: user.email!,
               image: user.image || "",
               providerId: account.providerAccountId,
-              role: "user",
+              role: UserRole.USER,
             });
           }
           return true;
@@ -48,7 +49,7 @@ export const authOptions: NextAuthOptions = {
              const dbUser = await User.findOne({ email: session.user.email });
              if (dbUser) {
                  session.user.id = dbUser._id.toString();
-                 session.user.role = dbUser.role;
+                 session.user.role = dbUser.role as UserRole;
              }
         }
         return session;
