@@ -1,2 +1,2 @@
-yarn lint && yarn format:check
+yarn lint && yarn format:check && yarn build
 
