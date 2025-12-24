@@ -86,7 +86,6 @@ export default function SaveStatusIndicator({
 			};
 		}
 
-		// UNSAVED
 		return {
 			bgColor: 'bg-neutral-800',
 			dotColor: 'bg-neutral-500',

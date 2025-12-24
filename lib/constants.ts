@@ -13,12 +13,9 @@ export const DEFAULT_AVATAR = '/assets/images/user.webp';
 export const LANGUAGE_OPTIONS = [
 	{ value: Language.JAVASCRIPT, label: 'JavaScript' },
 	{ value: Language.TYPESCRIPT, label: 'TypeScript' },
-	{ value: Language.PYTHON, label: 'Python' },
 	{ value: Language.HTML, label: 'HTML' },
 	{ value: Language.CSS, label: 'CSS' },
 	{ value: Language.JSON, label: 'JSON' },
-	{ value: Language.MARKDOWN, label: 'Markdown' },
-	{ value: Language.PLAINTEXT, label: 'Plain Text' },
 ] as const;
 
 export const VISIBILITY_OPTIONS = [

@@ -216,7 +216,6 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 	};
 
 	const handleTitleBlur = () => {
-		// Only update if title has actually changed
 		if (title !== lastSavedTitleRef.current) {
 			handleSettingsUpdate({ title });
 		}
@@ -236,7 +235,6 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 
 	return (
 		<div className="flex flex-col gap-4">
-			{/* Top Row: Title (1fr) + Settings (auto) */}
 			<div className="grid grid-cols-[1fr_auto] items-center gap-4">
 				<FileHeader
 					title={title}
@@ -257,7 +255,6 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 				/>
 			</div>
 
-			{/* Code Editor */}
 			<div className="relative">
 				<div className="absolute top-3 right-3 z-10">
 					<CopyButton text={content} />
@@ -270,7 +267,6 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 				/>
 			</div>
 
-			{/* Bottom: Meta Info */}
 			<div className="border-t border-neutral-800 pt-4">
 				<FileMetaInfo
 					visibility={visibility}

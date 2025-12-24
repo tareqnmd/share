@@ -24,12 +24,9 @@ export enum FileEditMode {
 export enum Language {
 	JAVASCRIPT = 'javascript',
 	TYPESCRIPT = 'typescript',
-	PYTHON = 'python',
 	HTML = 'html',
 	CSS = 'css',
 	JSON = 'json',
-	MARKDOWN = 'markdown',
-	PLAINTEXT = 'plaintext',
 }
 
 export enum SaveStatus {

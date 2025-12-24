@@ -47,7 +47,6 @@ interface FileMetaInfoProps {
 	saveError: string | null;
 }
 
-// Separate component for meta info to be used at the bottom
 export function FileMetaInfo({
 	visibility,
 	createdByName,
@@ -65,7 +64,6 @@ export function FileMetaInfo({
 
 	return (
 		<div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
-			{/* Author & Date */}
 			<div className="flex items-center gap-2 text-neutral-400">
 				<div className="flex items-center gap-1.5">
 					<svg
@@ -102,10 +100,8 @@ export function FileMetaInfo({
 				</div>
 			</div>
 
-			{/* Divider */}
 			<div className="w-px h-4 bg-neutral-700 hidden sm:block" />
 
-			{/* Visibility Badge */}
 			<div
 				className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full
 					transition-colors duration-200 ${
@@ -146,7 +142,6 @@ export function FileMetaInfo({
 				<span>{visibility === FileVisibility.PUBLIC ? 'Public' : 'Private'}</span>
 			</div>
 
-			{/* Save Status */}
 			<SaveStatusIndicator
 				status={saveStatus}
 				isSaving={isSaving}
