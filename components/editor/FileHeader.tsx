@@ -46,8 +46,7 @@ export default function FileHeader({
 
 			<div className="flex items-center gap-4 text-sm text-neutral-400">
 				<span>
-					Created by {createdByName} •{' '}
-					{new Date(createdAt).toLocaleDateString()}
+					Created by {createdByName} • {new Date(createdAt).toLocaleDateString()}
 				</span>
 				<SaveStatusIndicator
 					status={saveStatus}
@@ -68,4 +67,3 @@ export default function FileHeader({
 		</div>
 	);
 }
-

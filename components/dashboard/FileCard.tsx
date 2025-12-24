@@ -9,25 +9,14 @@ interface FileCardProps {
 	updatedAt: string;
 }
 
-export default function FileCard({
-	id,
-	title,
-	language,
-	visibility,
-	updatedAt,
-}: FileCardProps) {
+export default function FileCard({ id, title, language, visibility, updatedAt }: FileCardProps) {
 	return (
-		<Link
-			href={`${AppRoutes.CODE}/${id}`}
-			className="card flex flex-col gap-3 transition-shadow"
-		>
+		<Link href={`${AppRoutes.CODE}/${id}`} className="card flex flex-col gap-3 transition-shadow">
 			<div className="flex justify-between items-start gap-2">
 				<h3 className="font-bold text-lg truncate text-neutral-50">{title}</h3>
 				<span
 					className={`badge shrink-0 ${
-						visibility === FileVisibility.PUBLIC
-							? 'badge-success'
-							: 'badge-neutral'
+						visibility === FileVisibility.PUBLIC ? 'badge-success' : 'badge-neutral'
 					}`}
 				>
 					{visibility}
@@ -40,4 +29,3 @@ export default function FileCard({
 		</Link>
 	);
 }
-

@@ -1,20 +1,10 @@
 'use client';
 
-import {
-	GlobeIcon,
-	LockIcon,
-	TrashIcon,
-	UserIcon,
-	UsersIcon,
-} from '@/components/icons';
+import { GlobeIcon, LockIcon, TrashIcon, UserIcon, UsersIcon } from '@/components/icons';
 import DropdownMenu from '@/components/ui/DropdownMenu';
 import Select from '@/components/ui/Select';
 import { LANGUAGE_OPTIONS } from '@/lib/constants';
-import {
-	DropdownItemVariant,
-	FileEditMode,
-	FileVisibility,
-} from '@/types/enums';
+import { DropdownItemVariant, FileEditMode, FileVisibility } from '@/types/enums';
 import { DropdownMenuSection } from '@/types/types';
 import { CodeFileInput } from '@/utils/validations';
 
@@ -45,15 +35,13 @@ export default function FileControls({
 			items: [
 				{
 					label: 'Public',
-					onClick: () =>
-						onSettingsUpdate({ visibility: FileVisibility.PUBLIC }),
+					onClick: () => onSettingsUpdate({ visibility: FileVisibility.PUBLIC }),
 					active: visibility === FileVisibility.PUBLIC,
 					icon: <GlobeIcon />,
 				},
 				{
 					label: 'Private',
-					onClick: () =>
-						onSettingsUpdate({ visibility: FileVisibility.PRIVATE }),
+					onClick: () => onSettingsUpdate({ visibility: FileVisibility.PRIVATE }),
 					active: visibility === FileVisibility.PRIVATE,
 					icon: <LockIcon />,
 				},
@@ -70,8 +58,7 @@ export default function FileControls({
 				},
 				{
 					label: 'Collaborative',
-					onClick: () =>
-						onSettingsUpdate({ editMode: FileEditMode.COLLABORATIVE }),
+					onClick: () => onSettingsUpdate({ editMode: FileEditMode.COLLABORATIVE }),
 					active: editMode === FileEditMode.COLLABORATIVE,
 					icon: <UsersIcon />,
 				},
@@ -91,7 +78,7 @@ export default function FileControls({
 							},
 						],
 					},
-			  ]
+				]
 			: []),
 	];
 
@@ -110,4 +97,3 @@ export default function FileControls({
 		</>
 	);
 }
-

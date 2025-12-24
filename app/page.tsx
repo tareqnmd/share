@@ -13,8 +13,8 @@ export default async function Home() {
 				Share Your Code Securely
 			</h1>
 			<p className="text-xl text-neutral-300 max-w-2xl leading-relaxed">
-				A platform for developers to share snippets, collaborate in real-time,
-				and manage their code files with granular permissions.
+				A platform for developers to share snippets, collaborate in real-time, and manage their code
+				files with granular permissions.
 			</p>
 			{session ? (
 				<Link

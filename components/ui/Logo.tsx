@@ -19,10 +19,7 @@ export default function Logo() {
 	);
 
 	return (
-		<Link
-			href={AppRoutes.HOME}
-			className="flex items-center group"
-		>
+		<Link href={AppRoutes.HOME} className="flex items-center group">
 			{content}
 		</Link>
 	);

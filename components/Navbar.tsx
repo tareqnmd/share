@@ -17,10 +17,7 @@ export default async function Navbar() {
 				<div className="flex items-center gap-2 sm:gap-4">
 					{session ? (
 						<>
-							<Link
-								href={AppRoutes.DASHBOARD}
-								className="text-sm font-medium transition-all"
-							>
+							<Link href={AppRoutes.DASHBOARD} className="text-sm font-medium transition-all">
 								Dashboard
 							</Link>
 
@@ -39,11 +36,11 @@ export default async function Navbar() {
 										)}
 									</div>
 
-								<Avatar
-									src={session.user?.image}
-									alt={session.user?.name || 'User'}
-									size={AvatarSize.MD}
-								/>
+									<Avatar
+										src={session.user?.image}
+										alt={session.user?.name || 'User'}
+										size={AvatarSize.MD}
+									/>
 								</div>
 
 								<SignOut />

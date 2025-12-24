@@ -18,12 +18,7 @@ const sizeClasses: Record<AvatarSize, string> = {
 	[AvatarSize.LG]: 'w-12 h-12',
 };
 
-export default function Avatar({
-	src,
-	alt,
-	size = AvatarSize.MD,
-	className = '',
-}: AvatarProps) {
+export default function Avatar({ src, alt, size = AvatarSize.MD, className = '' }: AvatarProps) {
 	const [imgSrc, setImgSrc] = useState(src || DEFAULT_AVATAR);
 	const [hasError, setHasError] = useState(false);
 
@@ -53,4 +48,3 @@ export default function Avatar({
 		</div>
 	);
 }
-

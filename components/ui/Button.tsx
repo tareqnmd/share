@@ -8,11 +8,15 @@ import { ButtonProps as BaseButtonProps } from '@/types/types';
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, BaseButtonProps {}
 
 const variantStyles: Record<ButtonVariant, string> = {
-	[ButtonVariant.PRIMARY]: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500/30',
-	[ButtonVariant.SECONDARY]: 'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 focus:ring-neutral-500/30',
-	[ButtonVariant.SUCCESS]: 'bg-success-600 text-white hover:bg-success-700 focus:ring-success-500/30',
+	[ButtonVariant.PRIMARY]:
+		'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500/30',
+	[ButtonVariant.SECONDARY]:
+		'bg-neutral-100 text-neutral-900 hover:bg-neutral-200 focus:ring-neutral-500/30',
+	[ButtonVariant.SUCCESS]:
+		'bg-success-600 text-white hover:bg-success-700 focus:ring-success-500/30',
 	[ButtonVariant.DANGER]: 'bg-danger-600 text-white hover:bg-danger-700 focus:ring-danger-500/30',
-	[ButtonVariant.GHOST]: 'bg-transparent text-neutral-300 hover:bg-neutral-800 hover:text-neutral-50 focus:ring-neutral-500/30',
+	[ButtonVariant.GHOST]:
+		'bg-transparent text-neutral-300 hover:bg-neutral-800 hover:text-neutral-50 focus:ring-neutral-500/30',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {

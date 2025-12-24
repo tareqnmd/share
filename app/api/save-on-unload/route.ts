@@ -27,9 +27,7 @@ export async function POST(request: NextRequest) {
 		if (!contentResult.success) {
 			return NextResponse.json(
 				{
-					error: contentResult.error.issues
-						.map((e: { message: string }) => e.message)
-						.join(', '),
+					error: contentResult.error.issues.map((e: { message: string }) => e.message).join(', '),
 				},
 				{ status: 400 }
 			);
@@ -45,9 +43,7 @@ export async function POST(request: NextRequest) {
 		const newContent = contentResult.data.content;
 
 		if (!newContent || newContent.trim() === '') {
-			const existingFile = await CodeFile.findById(idResult.data).select(
-				'content'
-			);
+			const existingFile = await CodeFile.findById(idResult.data).select('content');
 			if (existingFile?.content && existingFile.content.trim() !== '') {
 				return NextResponse.json({ success: true, skipped: true });
 			}
@@ -66,9 +62,6 @@ export async function POST(request: NextRequest) {
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		console.error('Save on unload failed:', error);
-		return NextResponse.json(
-			{ error: 'Internal server error' },
-			{ status: 500 }
-		);
+		return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
 	}
 }

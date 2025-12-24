@@ -55,9 +55,7 @@ export async function createCodeFile(data: CodeFileInput) {
 		if (error instanceof z.ZodError) {
 			const err = error as unknown as ZodErrorLike;
 			const issues = err.errors || err.issues || [];
-			throw new Error(
-				`Validation failed: ${issues.map((e) => e.message).join(', ')}`
-			);
+			throw new Error(`Validation failed: ${issues.map((e) => e.message).join(', ')}`);
 		}
 		throw error;
 	}
@@ -96,21 +94,14 @@ export async function updateCodeFile(id: string, content: string) {
 		if (error instanceof z.ZodError) {
 			const err = error as unknown as ZodErrorLike;
 			const issues = err.errors || err.issues || [];
-			throw new Error(
-				`Content validation failed: ${issues.map((e) => e.message).join(', ')}`
-			);
+			throw new Error(`Content validation failed: ${issues.map((e) => e.message).join(', ')}`);
 		}
 		console.error('Failed to update file content:', error);
-		throw error instanceof Error
-			? error
-			: new Error('Failed to update file content');
+		throw error instanceof Error ? error : new Error('Failed to update file content');
 	}
 }
 
-export async function updateCodeFileSettings(
-	id: string,
-	data: Partial<CodeFileInput>
-) {
+export async function updateCodeFileSettings(id: string, data: Partial<CodeFileInput>) {
 	try {
 		const validatedId = validateFileId(id);
 
@@ -141,14 +132,10 @@ export async function updateCodeFileSettings(
 		if (error instanceof z.ZodError) {
 			const err = error as unknown as ZodErrorLike;
 			const issues = err.errors || err.issues || [];
-			throw new Error(
-				`Validation failed: ${issues.map((e) => e.message).join(', ')}`
-			);
+			throw new Error(`Validation failed: ${issues.map((e) => e.message).join(', ')}`);
 		}
 		console.error('Failed to update file settings:', error);
-		throw error instanceof Error
-			? error
-			: new Error('Failed to update file settings');
+		throw error instanceof Error ? error : new Error('Failed to update file settings');
 	}
 }
 

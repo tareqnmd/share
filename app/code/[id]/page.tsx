@@ -7,21 +7,14 @@ import { AppRoutes, FileVisibility } from '@/types/enums';
 import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
 
-export default async function CodePage({
-	params,
-}: {
-	params: Promise<{ id: string }>;
-}) {
+export default async function CodePage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
 
 	try {
 		await connectDB();
 		let file;
 		try {
-			file = await CodeFile.findById(id).populate(
-				'createdBy',
-				'name email _id'
-			);
+			file = await CodeFile.findById(id).populate('createdBy', 'name email _id');
 		} catch {
 			notFound();
 		}
@@ -51,10 +44,7 @@ export default async function CodePage({
 		);
 	} catch (error) {
 		const err = error as Error & { digest?: string };
-		if (
-			err?.digest?.startsWith('NEXT_REDIRECT') ||
-			err?.digest?.startsWith('NEXT_NOT_FOUND')
-		) {
+		if (err?.digest?.startsWith('NEXT_REDIRECT') || err?.digest?.startsWith('NEXT_NOT_FOUND')) {
 			throw error;
 		}
 		throw new Error('Failed to load code file');

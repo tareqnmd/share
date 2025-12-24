@@ -39,9 +39,10 @@ export default function CopyButton({ text, className = '' }: CopyButtonProps) {
 				text-xs font-medium
 				rounded-md
 				transition-all duration-200
-				${copied 
-					? 'bg-success-600 text-white' 
-					: 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700 hover:text-neutral-50'
+				${
+					copied
+						? 'bg-success-600 text-white'
+						: 'bg-neutral-800 text-neutral-300 hover:bg-neutral-700 hover:text-neutral-50'
 				}
 				border border-neutral-700
 				shadow-sm

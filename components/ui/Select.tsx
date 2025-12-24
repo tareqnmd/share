@@ -18,10 +18,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 		return (
 			<div className="flex flex-col gap-1">
 				{label && (
-					<label
-						htmlFor={selectId}
-						className="text-sm font-medium text-neutral-300"
-					>
+					<label htmlFor={selectId} className="text-sm font-medium text-neutral-300">
 						{label}
 					</label>
 				)}
@@ -63,9 +60,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 						<ChevronDownIcon className="h-4 w-4 text-neutral-400" />
 					</div>
 				</div>
-				{error && (
-					<span className="text-xs text-danger-400">{error}</span>
-				)}
+				{error && <span className="text-xs text-danger-400">{error}</span>}
 			</div>
 		);
 	}

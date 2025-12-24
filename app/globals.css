@@ -41,10 +41,11 @@
 	--color-warning-400: #fbbf24;
 	--color-warning-600: #d97706;
 
-	--font-sans: var(--font-poppins), 'Poppins', -apple-system, BlinkMacSystemFont,
-		'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	--font-mono: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code',
-		'SF Mono', Consolas, monospace;
+	--font-sans:
+		var(--font-poppins), 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+		'Helvetica Neue', Arial, sans-serif;
+	--font-mono:
+		var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
 }
 
 @layer base {
@@ -135,6 +136,8 @@
 	}
 
 	.animate-in {
-		animation: fadeIn 150ms ease-out, slideInFromTop 150ms ease-out;
+		animation:
+			fadeIn 150ms ease-out,
+			slideInFromTop 150ms ease-out;
 	}
 }

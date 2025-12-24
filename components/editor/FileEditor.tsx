@@ -1,16 +1,8 @@
 'use client';
 
-import {
-	deleteCodeFile,
-	updateCodeFile,
-	updateCodeFileSettings,
-} from '@/app/actions';
+import { deleteCodeFile, updateCodeFile, updateCodeFileSettings } from '@/app/actions';
 import CopyButton from '@/components/ui/CopyButton';
-import {
-	MAX_CONTENT_LENGTH,
-	MIN_SAVE_INTERVAL_MS,
-	SAVE_DEBOUNCE_MS,
-} from '@/lib/constants';
+import { MAX_CONTENT_LENGTH, MIN_SAVE_INTERVAL_MS, SAVE_DEBOUNCE_MS } from '@/lib/constants';
 import { AppRoutes, SaveStatus } from '@/types/enums';
 import { FileEditorProps } from '@/types/types';
 import { CodeFileInput } from '@/utils/validations';
@@ -20,11 +12,7 @@ import CodeEditor from './CodeEditor';
 import FileControls from './FileControls';
 import FileHeader from './FileHeader';
 
-export default function FileEditor({
-	file,
-	canEdit,
-	currentUserId,
-}: FileEditorProps) {
+export default function FileEditor({ file, canEdit, currentUserId }: FileEditorProps) {
 	const [content, setContent] = useState(file.content);
 	const [title, setTitle] = useState(file.title);
 	const [language, setLanguage] = useState(file.language);
@@ -75,18 +63,13 @@ export default function FileEditor({
 			if (newContent === lastSavedContentRef.current) return true;
 
 			if (newContent.length > MAX_CONTENT_LENGTH) {
-				setSaveError(
-					`Content exceeds maximum length of ${MAX_CONTENT_LENGTH} characters`
-				);
+				setSaveError(`Content exceeds maximum length of ${MAX_CONTENT_LENGTH} characters`);
 				setSaveStatus(SaveStatus.UNSAVED);
 				return false;
 			}
 
 			const now = Date.now();
-			if (
-				!isImmediate &&
-				now - lastSaveTimeRef.current < MIN_SAVE_INTERVAL_MS
-			) {
+			if (!isImmediate && now - lastSaveTimeRef.current < MIN_SAVE_INTERVAL_MS) {
 				pendingContentRef.current = newContent;
 				return false;
 			}
@@ -105,8 +88,7 @@ export default function FileEditor({
 				return true;
 			} catch (error) {
 				if (isMountedRef.current) {
-					const errorMessage =
-						error instanceof Error ? error.message : 'Failed to save';
+					const errorMessage = error instanceof Error ? error.message : 'Failed to save';
 					setSaveError(errorMessage);
 					setSaveStatus(SaveStatus.UNSAVED);
 				}
@@ -129,9 +111,7 @@ export default function FileEditor({
 			}
 
 			if (newContent.length > MAX_CONTENT_LENGTH) {
-				setSaveError(
-					`Content exceeds maximum length (${newContent.length}/${MAX_CONTENT_LENGTH})`
-				);
+				setSaveError(`Content exceeds maximum length (${newContent.length}/${MAX_CONTENT_LENGTH})`);
 				setSaveStatus(SaveStatus.UNSAVED);
 				return;
 			}
