@@ -5,10 +5,16 @@ import {
 	updateCodeFile,
 	updateCodeFileSettings,
 } from '@/app/actions';
+import {
+	GlobeIcon,
+	LockIcon,
+	TrashIcon,
+	UserIcon,
+	UsersIcon,
+} from '@/components/icons';
 import CopyButton from '@/components/ui/CopyButton';
 import DropdownMenu from '@/components/ui/DropdownMenu';
 import Select from '@/components/ui/Select';
-import { GlobeIcon, LockIcon, UserIcon, UsersIcon, TrashIcon } from '@/components/icons';
 import { LANGUAGE_OPTIONS } from '@/lib/constants';
 import { AppRoutes, FileEditMode, FileVisibility } from '@/types/enums';
 import { CodeFileInput, MAX_CONTENT_LENGTH } from '@/utils/validations';
@@ -47,7 +53,12 @@ interface SaveStatusIndicatorProps {
 	error?: string | null;
 }
 
-function SaveStatusIndicator({ status, isSaving, canEdit, error }: SaveStatusIndicatorProps) {
+function SaveStatusIndicator({
+	status,
+	isSaving,
+	canEdit,
+	error,
+}: SaveStatusIndicatorProps) {
 	if (!canEdit) return null;
 
 	return (
@@ -55,18 +66,21 @@ function SaveStatusIndicator({ status, isSaving, canEdit, error }: SaveStatusInd
 			{error && (
 				<>
 					<div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-					<span className="text-red-400 max-w-[200px] truncate" title={error}>
+					<span
+						className="text-red-400 max-w-[200px] truncate"
+						title={error}
+					>
 						{error}
 					</span>
 				</>
 			)}
-			{!error && status === 'saving' && (
+			{!error && (status === 'saving' || isSaving) && (
 				<>
 					<div className="w-2 h-2 rounded-full bg-warning-500 animate-pulse" />
 					<span className="text-warning-400">Saving...</span>
 				</>
 			)}
-			{!error && status === 'saved' && (
+			{!error && status === 'saved' && !isSaving && (
 				<>
 					<div className="w-2 h-2 rounded-full bg-success-500" />
 					<span className="text-success-400">Saved</span>
@@ -94,38 +108,42 @@ export default function FileEditor({
 	const [editMode, setEditMode] = useState(file.editMode);
 	const [isSaving, startTransition] = useTransition();
 	const [isDeleting, startDeleteTransition] = useTransition();
-	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
+	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>(
+		'saved'
+	);
 	const [saveError, setSaveError] = useState<string | null>(null);
 	const router = useRouter();
-	
+
 	const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const lastSavedContentRef = useRef(file.content);
 	const lastSaveTimeRef = useRef<number>(0);
 	const pendingContentRef = useRef<string | null>(null);
 	const isMountedRef = useRef(true);
-	const fileIdRef = useRef(file._id);
+
+	const [prevFileId, setPrevFileId] = useState(file._id);
 
 	const isOwner = file.createdBy._id === currentUserId;
 
+	if (file._id !== prevFileId) {
+		setPrevFileId(file._id);
+		setContent(file.content);
+		setTitle(file.title);
+		setLanguage(file.language);
+		setVisibility(file.visibility);
+		setEditMode(file.editMode);
+		setSaveStatus('saved');
+		setSaveError(null);
+	}
+
 	useEffect(() => {
-		if (file._id !== fileIdRef.current) {
-			setContent(file.content);
-			setTitle(file.title);
-			setLanguage(file.language);
-			setVisibility(file.visibility);
-			setEditMode(file.editMode);
-			setSaveStatus('saved');
-			setSaveError(null);
-			lastSavedContentRef.current = file.content;
-			pendingContentRef.current = null;
-			fileIdRef.current = file._id;
-			
-			if (saveTimeoutRef.current) {
-				clearTimeout(saveTimeoutRef.current);
-				saveTimeoutRef.current = null;
-			}
+		lastSavedContentRef.current = file.content;
+		pendingContentRef.current = null;
+
+		if (saveTimeoutRef.current) {
+			clearTimeout(saveTimeoutRef.current);
+			saveTimeoutRef.current = null;
 		}
-	}, [file]);
+	}, [file._id, file.content]);
 
 	const saveContent = useCallback(
 		async (newContent: string, isImmediate = false): Promise<boolean> => {
@@ -133,13 +151,18 @@ export default function FileEditor({
 			if (newContent === lastSavedContentRef.current) return true;
 
 			if (newContent.length > MAX_CONTENT_LENGTH) {
-				setSaveError(`Content exceeds maximum length of ${MAX_CONTENT_LENGTH} characters`);
+				setSaveError(
+					`Content exceeds maximum length of ${MAX_CONTENT_LENGTH} characters`
+				);
 				setSaveStatus('unsaved');
 				return false;
 			}
 
 			const now = Date.now();
-			if (!isImmediate && now - lastSaveTimeRef.current < MIN_SAVE_INTERVAL_MS) {
+			if (
+				!isImmediate &&
+				now - lastSaveTimeRef.current < MIN_SAVE_INTERVAL_MS
+			) {
 				pendingContentRef.current = newContent;
 				return false;
 			}
@@ -158,7 +181,8 @@ export default function FileEditor({
 				return true;
 			} catch (error) {
 				if (isMountedRef.current) {
-					const errorMessage = error instanceof Error ? error.message : 'Failed to save';
+					const errorMessage =
+						error instanceof Error ? error.message : 'Failed to save';
 					setSaveError(errorMessage);
 					setSaveStatus('unsaved');
 				}
@@ -168,67 +192,75 @@ export default function FileEditor({
 		[file._id]
 	);
 
-	const handleContentChange = useCallback((newContent: string) => {
-		setContent(newContent);
-		
-		if (!canEdit || newContent === lastSavedContentRef.current) {
-			if (newContent === lastSavedContentRef.current) {
-				setSaveStatus('saved');
-				setSaveError(null);
+	const handleContentChange = useCallback(
+		(newContent: string) => {
+			setContent(newContent);
+
+			if (!canEdit || newContent === lastSavedContentRef.current) {
+				if (newContent === lastSavedContentRef.current) {
+					setSaveStatus('saved');
+					setSaveError(null);
+				}
+				return;
 			}
-			return;
-		}
 
-		if (newContent.length > MAX_CONTENT_LENGTH) {
-			setSaveError(`Content exceeds maximum length (${newContent.length}/${MAX_CONTENT_LENGTH})`);
+			if (newContent.length > MAX_CONTENT_LENGTH) {
+				setSaveError(
+					`Content exceeds maximum length (${newContent.length}/${MAX_CONTENT_LENGTH})`
+				);
+				setSaveStatus('unsaved');
+				return;
+			}
+
 			setSaveStatus('unsaved');
-			return;
-		}
+			setSaveError(null);
+			pendingContentRef.current = newContent;
 
-		setSaveStatus('unsaved');
-		setSaveError(null);
-		pendingContentRef.current = newContent;
+			if (saveTimeoutRef.current) {
+				clearTimeout(saveTimeoutRef.current);
+			}
 
-		if (saveTimeoutRef.current) {
-			clearTimeout(saveTimeoutRef.current);
-		}
-
-		saveTimeoutRef.current = setTimeout(() => {
-			startTransition(async () => {
-				await saveContent(newContent);
-			});
-		}, SAVE_DEBOUNCE_MS);
-	}, [canEdit, saveContent]);
+			saveTimeoutRef.current = setTimeout(() => {
+				startTransition(async () => {
+					await saveContent(newContent);
+				});
+			}, SAVE_DEBOUNCE_MS);
+		},
+		[canEdit, saveContent]
+	);
 
 	useEffect(() => {
 		isMountedRef.current = true;
 
 		return () => {
 			isMountedRef.current = false;
-			
+
 			if (saveTimeoutRef.current) {
 				clearTimeout(saveTimeoutRef.current);
 				saveTimeoutRef.current = null;
 			}
 
 			const pendingContent = pendingContentRef.current;
-			if (pendingContent && pendingContent !== lastSavedContentRef.current && canEdit) {
+			if (
+				pendingContent &&
+				pendingContent !== lastSavedContentRef.current &&
+				canEdit
+			) {
 				try {
-					const data = JSON.stringify({ 
-						fileId: file._id, 
-						content: pendingContent 
+					const data = JSON.stringify({
+						fileId: file._id,
+						content: pendingContent,
 					});
 					navigator.sendBeacon('/api/save-on-unload', data);
-				} catch {
-				}
+				} catch {}
 			}
 		};
 	}, [file._id, canEdit]);
 
 	useEffect(() => {
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-			const hasUnsavedChanges = 
-				pendingContentRef.current !== null && 
+			const hasUnsavedChanges =
+				pendingContentRef.current !== null &&
 				pendingContentRef.current !== lastSavedContentRef.current;
 
 			if (hasUnsavedChanges && canEdit) {
@@ -289,13 +321,15 @@ export default function FileEditor({
 			items: [
 				{
 					label: 'Public',
-					onClick: () => handleSettingsUpdate({ visibility: FileVisibility.PUBLIC }),
+					onClick: () =>
+						handleSettingsUpdate({ visibility: FileVisibility.PUBLIC }),
 					active: visibility === FileVisibility.PUBLIC,
 					icon: <GlobeIcon />,
 				},
 				{
 					label: 'Private',
-					onClick: () => handleSettingsUpdate({ visibility: FileVisibility.PRIVATE }),
+					onClick: () =>
+						handleSettingsUpdate({ visibility: FileVisibility.PRIVATE }),
 					active: visibility === FileVisibility.PRIVATE,
 					icon: <LockIcon />,
 				},
@@ -312,7 +346,8 @@ export default function FileEditor({
 				},
 				{
 					label: 'Collaborative',
-					onClick: () => handleSettingsUpdate({ editMode: FileEditMode.COLLABORATIVE }),
+					onClick: () =>
+						handleSettingsUpdate({ editMode: FileEditMode.COLLABORATIVE }),
 					active: editMode === FileEditMode.COLLABORATIVE,
 					icon: <UsersIcon />,
 				},
@@ -359,7 +394,12 @@ export default function FileEditor({
 							Created by {file.createdBy.name} •{' '}
 							{new Date(file.createdAt).toLocaleDateString()}
 						</span>
-						<SaveStatusIndicator status={saveStatus} isSaving={isSaving} canEdit={canEdit} error={saveError} />
+						<SaveStatusIndicator
+							status={saveStatus}
+							isSaving={isSaving}
+							canEdit={canEdit}
+							error={saveError}
+						/>
 						<span
 							className={`text-xs px-2 py-0.5 rounded-full ${
 								visibility === FileVisibility.PUBLIC
