@@ -2,7 +2,7 @@
 
 import { CheckIcon, DotsVerticalIcon } from '@/components/icons';
 import { DropdownItemVariant } from '@/types/enums';
-import { DropdownMenuItem, DropdownMenuSection } from '@/types/types';
+import { DropdownMenuSection } from '@/types/types';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
 interface DropdownMenuProps {
@@ -35,7 +35,7 @@ export default function DropdownMenu({ sections, trigger }: DropdownMenuProps) {
 		<div className="relative" ref={menuRef} onKeyDown={handleKeyDown}>
 			<button
 				onClick={() => setIsOpen(!isOpen)}
-				className="p-2 rounded-lg text-neutral-400 hover:text-neutral-50 hover:bg-neutral-800 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+				className="p-2 rounded-lg text-neutral-400 hover:text-neutral-50 hover:bg-neutral-800 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-500/30"
 				aria-label="Open menu"
 				aria-expanded={isOpen}
 			>
@@ -66,7 +66,7 @@ export default function DropdownMenu({ sections, trigger }: DropdownMenuProps) {
 									disabled={item.disabled}
 									className={`
 									w-full px-3 py-2 text-left text-sm flex items-center gap-3
-									transition-colors
+									transition-colors cursor-pointer
 									disabled:opacity-50 disabled:cursor-not-allowed
 									${
 										item.variant === DropdownItemVariant.DANGER

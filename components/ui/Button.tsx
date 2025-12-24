@@ -1,11 +1,14 @@
 'use client';
 
-import { forwardRef, ButtonHTMLAttributes } from 'react';
 import { SpinnerIcon } from '@/components/icons';
-import { ButtonVariant, ButtonSize } from '@/types/enums';
-import { ButtonProps as BaseButtonProps } from '@/types/types';
+import { ButtonSize, ButtonVariant } from '@/types/enums';
+import { ButtonHTMLAttributes, forwardRef } from 'react';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, BaseButtonProps {}
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+	variant?: ButtonVariant;
+	size?: ButtonSize;
+	isLoading?: boolean;
+}
 
 const variantStyles: Record<ButtonVariant, string> = {
 	[ButtonVariant.PRIMARY]:
@@ -47,6 +50,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 					font-medium
 					rounded-lg
 					transition-colors
+					cursor-pointer
 					focus:outline-none
 					focus:ring-2
 					disabled:opacity-50

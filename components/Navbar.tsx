@@ -17,7 +17,10 @@ export default async function Navbar() {
 				<div className="flex items-center gap-2 sm:gap-4">
 					{session ? (
 						<>
-							<Link href={AppRoutes.DASHBOARD} className="text-sm font-medium transition-all">
+							<Link
+								href={AppRoutes.DASHBOARD}
+								className="text-sm font-medium transition-all cursor-pointer"
+							>
 								Dashboard
 							</Link>
 

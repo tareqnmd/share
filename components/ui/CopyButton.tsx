@@ -39,6 +39,7 @@ export default function CopyButton({ text, className = '' }: CopyButtonProps) {
 				text-xs font-medium
 				rounded-md
 				transition-all duration-200
+				cursor-pointer
 				${
 					copied
 						? 'bg-success-600 text-white'
