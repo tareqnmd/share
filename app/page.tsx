@@ -12,7 +12,7 @@ export default async function Home() {
 			<h1 className="text-5xl font-bold tracking-tight text-neutral-50">
 				Share Your Code Securely
 			</h1>
-			<p className="text-xl text-neutral-300 max-w-[42rem] leading-relaxed">
+			<p className="text-xl text-neutral-300 max-w-2xl leading-relaxed">
 				A platform for developers to share snippets, collaborate in real-time,
 				and manage their code files with granular permissions.
 			</p>
