@@ -15,7 +15,7 @@ export default function GlobalError({
           <p className="max-w-md text-neutral-400">{error.message || "A critical error occurred."}</p>
           <button
             onClick={() => reset()}
-            className="px-6 py-3 bg-primary-600 text-white rounded-md font-medium hover:bg-primary-700 transition-colors"
+            className="px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition-colors"
           >
             Refresh Application
           </button>

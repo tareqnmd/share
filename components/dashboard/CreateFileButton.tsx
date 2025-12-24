@@ -5,6 +5,7 @@ import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { AppRoutes, FileVisibility, FileEditMode } from "@/types/enums";
 import { LANGUAGE_OPTIONS } from "@/lib/constants";
+import Button from "@/components/ui/Button";
 
 export default function CreateFileButton({ disabled }: { disabled: boolean }) {
     const [isPending, startTransition] = useTransition();
@@ -28,12 +29,14 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
     };
 
     return (
-        <button 
+        <Button 
+            variant="primary"
+            size="md"
             onClick={handleCreate} 
-            disabled={disabled || isPending}
-            className="bg-primary-600 text-white px-4 py-2 rounded-md font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            disabled={disabled}
+            isLoading={isPending}
         >
-            {isPending ? "Creating..." : "Create New File"}
-        </button>
+            Create New File
+        </Button>
     );
 }

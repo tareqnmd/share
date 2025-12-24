@@ -121,4 +121,27 @@
 	.font-mono {
 		font-family: var(--font-mono);
 	}
+
+	/* Dropdown animations */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slideInFromTop {
+		from {
+			transform: translateY(-4px);
+		}
+		to {
+			transform: translateY(0);
+		}
+	}
+
+	.animate-in {
+		animation: fadeIn 150ms ease-out, slideInFromTop 150ms ease-out;
+	}
 }
