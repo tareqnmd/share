@@ -12,9 +12,9 @@ export default async function Navbar() {
 
 	return (
 		<nav className="sticky top-0 z-50 border-b border-neutral-800/50 bg-neutral-950/80 backdrop-blur-xl">
-			<div className="app-container flex justify-between items-center h-16">
+			<div className="app-container flex-wrap flex justify-between items-center py-4 gap-2">
 				<Logo />
-				<div className="flex items-center gap-2">
+				<div className="flex items-center sm:gap-2">
 					{session ? (
 						<>
 							<Link
@@ -24,11 +24,11 @@ export default async function Navbar() {
 								Dashboard
 							</Link>
 
-							<div className="w-px h-6 bg-neutral-800 mx-1" />
+							<div className="w-px h-6 bg-neutral-800 sm:mx-1" />
 
 							<div className="flex items-center gap-3 pl-2">
 								<div className="flex flex-col items-end">
-									<span className="text-sm font-medium text-neutral-200">
+									<span className="max-sm:hidden text-sm font-medium text-neutral-200">
 										{session.user?.name}
 									</span>
 									{session.user?.role === UserRole.ADMIN && (
