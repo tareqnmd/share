@@ -5,18 +5,15 @@ import {
 	updateCodeFile,
 	updateCodeFileSettings,
 } from '@/app/actions';
-import {
-	EDIT_MODE_OPTIONS,
-	LANGUAGE_OPTIONS,
-} from '@/lib/constants';
+import CopyButton from '@/components/ui/CopyButton';
+import DropdownMenu from '@/components/ui/DropdownMenu';
+import Select from '@/components/ui/Select';
+import { EDIT_MODE_OPTIONS, LANGUAGE_OPTIONS } from '@/lib/constants';
 import { AppRoutes, FileEditMode, FileVisibility } from '@/types/enums';
 import { CodeFileInput } from '@/utils/validations';
 import { useRouter } from 'next/navigation';
-import { useState, useTransition, useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import CodeEditor from './CodeEditor';
-import Select from '@/components/ui/Select';
-import DropdownMenu from '@/components/ui/DropdownMenu';
-import CopyButton from '@/components/ui/CopyButton';
 
 interface FileProps {
 	_id: string;
@@ -51,7 +48,9 @@ export default function FileEditor({
 	const [editMode, setEditMode] = useState(file.editMode);
 	const [isSaving, startTransition] = useTransition();
 	const [isDeleting, startDeleteTransition] = useTransition();
-	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
+	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>(
+		'saved'
+	);
 	const router = useRouter();
 	const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const lastSavedContentRef = useRef(file.content);
@@ -59,20 +58,23 @@ export default function FileEditor({
 	const isOwner = file.createdBy._id === currentUserId;
 
 	// Auto-save function
-	const saveContent = useCallback((newContent: string) => {
-		if (newContent === lastSavedContentRef.current) return;
-		
-		setSaveStatus('saving');
-		startTransition(async () => {
-			try {
-				await updateCodeFile(file._id, newContent);
-				lastSavedContentRef.current = newContent;
-				setSaveStatus('saved');
-			} catch {
-				setSaveStatus('unsaved');
-			}
-		});
-	}, [file._id]);
+	const saveContent = useCallback(
+		(newContent: string) => {
+			if (newContent === lastSavedContentRef.current) return;
+
+			setSaveStatus('saving');
+			startTransition(async () => {
+				try {
+					await updateCodeFile(file._id, newContent);
+					lastSavedContentRef.current = newContent;
+					setSaveStatus('saved');
+				} catch {
+					setSaveStatus('unsaved');
+				}
+			});
+		},
+		[file._id]
+	);
 
 	// Debounced auto-save on content change
 	useEffect(() => {
@@ -80,7 +82,7 @@ export default function FileEditor({
 		if (content === lastSavedContentRef.current) return;
 
 		setSaveStatus('unsaved');
-		
+
 		if (saveTimeoutRef.current) {
 			clearTimeout(saveTimeoutRef.current);
 		}
@@ -132,51 +134,90 @@ export default function FileEditor({
 	};
 
 	const toggleVisibility = () => {
-		const newVisibility = visibility === FileVisibility.PUBLIC 
-			? FileVisibility.PRIVATE 
-			: FileVisibility.PUBLIC;
+		const newVisibility =
+			visibility === FileVisibility.PUBLIC
+				? FileVisibility.PRIVATE
+				: FileVisibility.PUBLIC;
 		handleSettingsUpdate({ visibility: newVisibility });
 	};
 
 	const menuItems = [
 		{
-			label: visibility === FileVisibility.PUBLIC ? 'Make Private' : 'Make Public',
+			label:
+				visibility === FileVisibility.PUBLIC ? 'Make Private' : 'Make Public',
 			onClick: toggleVisibility,
-			icon: visibility === FileVisibility.PUBLIC ? (
-				<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-				</svg>
-			) : (
-				<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
-			),
+			icon:
+				visibility === FileVisibility.PUBLIC ? (
+					<svg
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+						/>
+					</svg>
+				) : (
+					<svg
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth={2}
+							d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+				),
 		},
-		...EDIT_MODE_OPTIONS.map(option => ({
+		...EDIT_MODE_OPTIONS.map((option) => ({
 			label: option.label,
-			onClick: () => handleSettingsUpdate({ editMode: option.value as FileEditMode }),
-			icon: editMode === option.value ? (
-				<svg fill="currentColor" viewBox="0 0 24 24">
-					<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-				</svg>
-			) : null,
+			onClick: () =>
+				handleSettingsUpdate({ editMode: option.value as FileEditMode }),
+			icon:
+				editMode === option.value ? (
+					<svg
+						fill="currentColor"
+						viewBox="0 0 24 24"
+					>
+						<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+					</svg>
+				) : null,
 		})),
-		...(isOwner ? [{
-			label: isDeleting ? 'Deleting...' : 'Delete File',
-			onClick: handleDelete,
-			variant: 'danger' as const,
-			disabled: isDeleting,
-			icon: (
-				<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-				</svg>
-			),
-		}] : []),
+		...(isOwner
+			? [
+					{
+						label: isDeleting ? 'Deleting...' : 'Delete File',
+						onClick: handleDelete,
+						variant: 'danger' as const,
+						disabled: isDeleting,
+						icon: (
+							<svg
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+								/>
+							</svg>
+						),
+					},
+			  ]
+			: []),
 	];
 
 	const SaveStatusIndicator = () => {
 		if (!canEdit) return null;
-		
+
 		return (
 			<div className="flex items-center gap-2 text-xs">
 				{saveStatus === 'saving' && (
@@ -217,22 +258,23 @@ export default function FileEditor({
 						) : (
 							<h1 className="text-2xl font-bold text-neutral-50">{title}</h1>
 						)}
-						
-						{/* Visibility badge */}
-						<span className={`text-xs px-2 py-0.5 rounded-full ${
-							visibility === FileVisibility.PUBLIC 
-								? 'bg-success-500/20 text-success-400' 
-								: 'bg-neutral-700 text-neutral-400'
-						}`}>
-							{visibility === FileVisibility.PUBLIC ? 'Public' : 'Private'}
-						</span>
 					</div>
-					
+
 					<div className="flex items-center gap-4 text-sm text-neutral-400">
 						<span>
-							Created by {file.createdBy.name} • {new Date(file.createdAt).toLocaleDateString()}
+							Created by {file.createdBy.name} •{' '}
+							{new Date(file.createdAt).toLocaleDateString()}
 						</span>
 						<SaveStatusIndicator />
+						<span
+							className={`text-xs px-2 py-0.5 rounded-full ${
+								visibility === FileVisibility.PUBLIC
+									? 'bg-success-500/20 text-success-400'
+									: 'bg-neutral-700 text-neutral-400'
+							}`}
+						>
+							{visibility === FileVisibility.PUBLIC ? 'Public' : 'Private'}
+						</span>
 					</div>
 				</div>
 
