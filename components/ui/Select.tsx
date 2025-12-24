@@ -2,11 +2,7 @@
 
 import { forwardRef, SelectHTMLAttributes, useId } from 'react';
 import { ChevronDownIcon } from '@/components/icons';
-
-export interface SelectOption {
-	value: string;
-	label: string;
-}
+import { SelectOption } from '@/types/types';
 
 interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
 	options: readonly SelectOption[];

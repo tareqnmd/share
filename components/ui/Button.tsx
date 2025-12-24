@@ -1,15 +1,11 @@
 'use client';
 
-import { forwardRef, ButtonHTMLAttributes, ReactNode } from 'react';
+import { forwardRef, ButtonHTMLAttributes } from 'react';
 import { SpinnerIcon } from '@/components/icons';
 import { ButtonVariant, ButtonSize } from '@/types/enums';
+import { ButtonProps as BaseButtonProps } from '@/types/types';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	variant?: ButtonVariant;
-	size?: ButtonSize;
-	children: ReactNode;
-	isLoading?: boolean;
-}
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>, BaseButtonProps {}
 
 const variantStyles: Record<ButtonVariant, string> = {
 	[ButtonVariant.PRIMARY]: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500/30',

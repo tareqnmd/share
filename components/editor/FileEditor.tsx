@@ -15,7 +15,12 @@ import {
 import CopyButton from '@/components/ui/CopyButton';
 import DropdownMenu from '@/components/ui/DropdownMenu';
 import Select from '@/components/ui/Select';
-import { LANGUAGE_OPTIONS } from '@/lib/constants';
+import {
+	LANGUAGE_OPTIONS,
+	MAX_CONTENT_LENGTH,
+	MIN_SAVE_INTERVAL_MS,
+	SAVE_DEBOUNCE_MS,
+} from '@/lib/constants';
 import {
 	AppRoutes,
 	DropdownItemVariant,
@@ -23,41 +28,15 @@ import {
 	FileVisibility,
 	SaveStatus,
 } from '@/types/enums';
-import { CodeFileInput, MAX_CONTENT_LENGTH } from '@/utils/validations';
+import {
+	CodeFile,
+	FileEditorProps,
+	SaveStatusIndicatorProps,
+} from '@/types/types';
+import { CodeFileInput } from '@/utils/validations';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import CodeEditor from './CodeEditor';
-
-const SAVE_DEBOUNCE_MS = 1500;
-const MIN_SAVE_INTERVAL_MS = 2000;
-
-interface FileProps {
-	_id: string;
-	title: string;
-	content: string;
-	language: string;
-	visibility: FileVisibility;
-	editMode: FileEditMode;
-	createdBy: {
-		_id: string;
-		name: string;
-	};
-	createdAt: string;
-	updatedAt: string;
-}
-
-interface FileEditorProps {
-	file: FileProps;
-	canEdit: boolean;
-	currentUserId?: string;
-}
-
-interface SaveStatusIndicatorProps {
-	status: SaveStatus;
-	isSaving: boolean;
-	canEdit: boolean;
-	error?: string | null;
-}
 
 function SaveStatusIndicator({
 	status,

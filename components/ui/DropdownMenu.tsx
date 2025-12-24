@@ -2,21 +2,8 @@
 
 import { CheckIcon, DotsVerticalIcon } from '@/components/icons';
 import { DropdownItemVariant } from '@/types/enums';
+import { DropdownMenuItem, DropdownMenuSection } from '@/types/types';
 import { ReactNode, useEffect, useRef, useState } from 'react';
-
-export interface DropdownMenuItem {
-	label: string;
-	onClick: () => void;
-	icon?: ReactNode;
-	variant?: DropdownItemVariant;
-	disabled?: boolean;
-	active?: boolean;
-}
-
-export interface DropdownMenuSection {
-	title?: string;
-	items: DropdownMenuItem[];
-}
 
 interface DropdownMenuProps {
 	sections: DropdownMenuSection[];

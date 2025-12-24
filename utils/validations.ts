@@ -1,9 +1,10 @@
+import {
+	MAX_CONTENT_LENGTH,
+	MAX_TITLE_LENGTH,
+	MIN_TITLE_LENGTH,
+} from '@/lib/constants';
 import { FileEditMode, FileVisibility } from '@/types/enums';
 import { z } from 'zod';
-
-export const MAX_CONTENT_LENGTH = 500000;
-export const MAX_TITLE_LENGTH = 100;
-export const MIN_TITLE_LENGTH = 1;
 
 const objectIdRegex = /^[a-f\d]{24}$/i;
 

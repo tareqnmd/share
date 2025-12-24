@@ -2,16 +2,9 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { DEFAULT_AVATAR } from '@/lib/constants';
 import { AvatarSize } from '@/types/enums';
-
-const DEFAULT_AVATAR = '/assets/images/user.webp';
-
-interface AvatarProps {
-	src?: string | null;
-	alt: string;
-	size?: AvatarSize;
-	className?: string;
-}
+import { AvatarProps } from '@/types/types';
 
 const sizeMap: Record<AvatarSize, number> = {
 	[AvatarSize.SM]: 24,

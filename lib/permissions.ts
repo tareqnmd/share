@@ -1,6 +1,7 @@
 import User from "@/models/User";
 import CodeFile from "@/models/CodeFile";
 import connectDB from "./db";
+import { MAX_FILES_PER_USER } from "./constants";
 import { UserRole, FileVisibility, FileEditMode } from "@/types/enums";
 
 export async function canCreateFile(userId: string): Promise<boolean> {
@@ -11,7 +12,7 @@ export async function canCreateFile(userId: string): Promise<boolean> {
   if (user.role === UserRole.ADMIN) return true;
 
   const fileCount = await CodeFile.countDocuments({ createdBy: userId });
-  return fileCount < 5;
+  return fileCount < MAX_FILES_PER_USER;
 }
 
 export async function canEditFile(userId: string, fileId: string): Promise<boolean> {

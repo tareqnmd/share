@@ -2,13 +2,7 @@
 import Editor, { OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import { useCallback, useRef } from 'react';
-
-interface CodeEditorProps {
-	code: string;
-	language: string;
-	onChange?: (value: string | undefined) => void;
-	readOnly?: boolean;
-}
+import { CodeEditorProps } from '@/types/types';
 
 function EditorLoader() {
 	return (
