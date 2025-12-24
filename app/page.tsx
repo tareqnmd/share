@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default async function Home() {
 	const session = await getServerSession(authOptions);
 	return (
-		<div className="flex flex-col items-center justify-center min-h-[80vh] text-center space-y-6">
+		<div className="flex flex-col items-center justify-center min-h-[80vh] text-center gap-6">
 			<h1 className="text-5xl font-bold tracking-tight text-neutral-50">
 				Share Your Code Securely
 			</h1>

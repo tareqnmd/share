@@ -91,9 +91,9 @@ export default function FileEditor({
 	};
 
 	return (
-		<div className="space-y-4">
+		<div className="flex flex-col gap-4">
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-neutral-800 pb-4">
-				<div className="flex-1 w-full">
+				<div className="flex flex-col gap-1 flex-1 w-full">
 					{canEdit ? (
 						<input
 							value={title}

@@ -2,9 +2,9 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function Loading() {
 	return (
-		<div className="space-y-4">
+		<div className="flex flex-col gap-4">
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-neutral-800 pb-4">
-				<div className="flex-1 w-full space-y-2">
+				<div className="flex flex-col gap-1 flex-1 w-full">
 					<Skeleton className="h-8 w-1/3" />
 					<Skeleton className="h-4 w-1/4" />
 				</div>

@@ -25,16 +25,16 @@ export default async function Dashboard() {
     const limit = 5;
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-3xl font-bold text-neutral-50">My Files</h1>
                 <CreateFileButton disabled={isUser && fileCount >= limit} />
             </div>
             
             {isUser && (
-                <div className="bg-neutral-800 p-4 rounded-lg border border-neutral-700">
+                <div className="flex flex-col gap-2 bg-neutral-800 p-4 rounded-lg border border-neutral-700">
                     <p className="font-medium text-neutral-50">File Quota: {fileCount} / {limit} used</p>
-                    <div className="w-full bg-neutral-700 h-2 rounded-full mt-2">
+                    <div className="w-full bg-neutral-700 h-2 rounded-full">
                         <div 
                             className="bg-primary-600 h-2 rounded-full transition-all" 
                             style={{ width: `${Math.min((fileCount / limit) * 100, 100)}%` }}
@@ -43,21 +43,21 @@ export default async function Dashboard() {
                 </div>
             )}
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {files.map((file) => (
                     <Link 
                         href={`${AppRoutes.CODE}/${file._id}`} 
                         key={file._id.toString()} 
-                        className="card block transition-shadow"
+                        className="card flex flex-col gap-3 transition-shadow"
                     >
-                        <div className="flex justify-between items-start mb-2">
+                        <div className="flex justify-between items-start gap-2">
                             <h3 className="font-bold text-lg truncate text-neutral-50">{file.title}</h3>
-                            <span className={`badge ${file.visibility === FileVisibility.PUBLIC ? 'badge-success' : 'badge-neutral'}`}>
+                            <span className={`badge shrink-0 ${file.visibility === FileVisibility.PUBLIC ? 'badge-success' : 'badge-neutral'}`}>
                                 {file.visibility}
                             </span>
                         </div>
-                        <p className="text-sm text-neutral-400 mb-4">{file.language}</p>
-                        <div className="text-xs text-neutral-500">
+                        <p className="text-sm text-neutral-400">{file.language}</p>
+                        <div className="text-xs text-neutral-500 mt-auto">
                             Updated {new Date(file.updatedAt).toLocaleDateString()}
                         </div>
                     </Link>
