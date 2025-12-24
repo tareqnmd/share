@@ -1,10 +1,12 @@
-'use client';
+import { authOptions } from '@/lib/auth';
 import { AppRoutes, UserRole } from '@/types/enums';
-import { signIn, signOut, useSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 import Link from 'next/link';
+import SignIn from './shared/SignIn';
+import SignOut from './shared/SignOut';
 
-export default function Navbar() {
-	const { data: session } = useSession();
+export default async function Navbar() {
+	const session = await getServerSession(authOptions);
 
 	return (
 		<nav className="border-b border-zinc-200 dark:border-zinc-800 p-4 flex justify-between items-center bg-white dark:bg-zinc-950">
@@ -31,20 +33,10 @@ export default function Navbar() {
 								</span>
 							)}
 						</div>
-						<button
-							onClick={() => signOut()}
-							className="text-sm text-red-500 hover:text-red-600 font-medium"
-						>
-							Sign Out
-						</button>
+						<SignOut />
 					</>
 				) : (
-					<button
-						onClick={() => signIn('google')}
-						className="bg-black text-white px-4 py-2 rounded text-sm font-medium hover:bg-zinc-800 transition-colors"
-					>
-						Sign In with Google
-					</button>
+					<SignIn />
 				)}
 			</div>
 		</nav>
