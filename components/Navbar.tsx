@@ -14,35 +14,37 @@ export default async function Navbar() {
 		<nav className="sticky top-0 z-50 border-b border-neutral-800/50 bg-neutral-950/80 backdrop-blur-xl">
 			<div className="app-container flex-wrap flex justify-between items-center py-4 gap-2">
 				<Logo />
-				<div className="flex items-center sm:gap-2">
+				<div className="flex items-center gap-2 sm:gap-4">
 					{session ? (
 						<>
 							<Link
 								href={AppRoutes.DASHBOARD}
-								className="px-3 py-2 text-sm font-medium hover:bg-neutral-800/50 rounded-lg transition-all"
+								className="text-sm font-medium transition-all"
 							>
 								Dashboard
 							</Link>
 
-							<div className="w-px h-6 bg-neutral-800 sm:mx-1" />
+							<div className="w-px h-6 bg-neutral-800" />
 
-							<div className="flex items-center gap-3 pl-2">
-								<div className="flex flex-col items-end">
-									<span className="max-sm:hidden text-sm font-medium text-neutral-200">
-										{session.user?.name}
-									</span>
-									{session.user?.role === UserRole.ADMIN && (
-										<span className="text-[10px] font-semibold uppercase tracking-wider text-primary-400">
-											Admin
+							<div className="flex items-center gap-4">
+								<div className="flex items-center gap-2">
+									<div className="max-sm:hidden flex flex-col items-end">
+										<span className="text-sm font-medium text-neutral-200">
+											{session.user?.name}
 										</span>
-									)}
-								</div>
+										{session.user?.role === UserRole.ADMIN && (
+											<span className="text-[10px] font-semibold uppercase tracking-wider text-primary-400">
+												Admin
+											</span>
+										)}
+									</div>
 
-								<Avatar
-									src={session.user?.image}
-									alt={session.user?.name || 'User'}
-									size="md"
-								/>
+									<Avatar
+										src={session.user?.image}
+										alt={session.user?.name || 'User'}
+										size="md"
+									/>
+								</div>
 
 								<SignOut />
 							</div>

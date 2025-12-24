@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import { AppRoutes } from '@/types/enums';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
+import { PlusIcon } from '@/components/icons';
 
 export default async function Home() {
 	const session = await getServerSession(authOptions);
@@ -18,8 +19,9 @@ export default async function Home() {
 			{session ? (
 				<Link
 					href={AppRoutes.PUBLIC_FILES}
-					className="border border-neutral-700 bg-neutral-900 px-6 py-4 rounded-lg font-medium transition-colors hover:bg-neutral-800 text-neutral-50"
+					className="flex items-center gap-2 border border-neutral-700 bg-neutral-900 px-6 py-4 rounded-lg font-medium transition-colors hover:bg-neutral-800 text-neutral-50"
 				>
+					<PlusIcon className="w-5 h-5" />
 					Create a new file
 				</Link>
 			) : (

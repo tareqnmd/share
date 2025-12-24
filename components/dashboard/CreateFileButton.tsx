@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { AppRoutes, FileVisibility, FileEditMode } from "@/types/enums";
 import { LANGUAGE_OPTIONS } from "@/lib/constants";
 import Button from "@/components/ui/Button";
+import { PlusIcon } from "@/components/icons";
 
 export default function CreateFileButton({ disabled }: { disabled: boolean }) {
     const [isPending, startTransition] = useTransition();
@@ -36,6 +37,7 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
             disabled={disabled}
             isLoading={isPending}
         >
+            <PlusIcon className="w-5 h-5" />
             Create New File
         </Button>
     );
