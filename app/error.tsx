@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
 import Button from '@/components/ui/Button';
+import { ButtonVariant } from '@/types';
+import { useEffect } from 'react';
 
 export default function Error({
 	error,
@@ -20,7 +21,7 @@ export default function Error({
 			<p className="text-neutral-400 max-w-md">
 				{error.message || 'An unexpected error occurred.'}
 			</p>
-			<Button variant="secondary" onClick={() => reset()}>
+			<Button variant={ButtonVariant.SECONDARY} onClick={() => reset()}>
 				Try again
 			</Button>
 		</div>
