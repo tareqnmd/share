@@ -30,7 +30,7 @@ export default async function Navbar() {
 						<>
 							<Link
 								href={AppRoutes.DASHBOARD}
-								className="px-3 py-2 text-sm font-medium text-neutral-400 hover:text-neutral-50 hover:bg-neutral-800/50 rounded-lg transition-all"
+								className="px-3 py-2 text-sm font-medium hover:bg-neutral-800/50 rounded-lg transition-all"
 							>
 								Dashboard
 							</Link>
