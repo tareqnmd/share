@@ -1,4 +1,3 @@
-import { AppRoutes } from '@/types/enums';
 import { getToken } from 'next-auth/jwt';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -14,4 +13,6 @@ export default async function proxy(request: NextRequest) {
 	return NextResponse.next();
 }
 
-export const config = { matcher: [AppRoutes.DASHBOARD] };
+export const config = {
+	matcher: ['/dashboard/:path*'],
+};
