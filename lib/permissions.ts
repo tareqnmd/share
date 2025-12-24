@@ -1,6 +1,6 @@
 import CodeFile from '@/models/CodeFile';
 import User from '@/models/User';
-import { UserRole } from '@/types/enums';
+import { FileEditMode, UserRole } from '@/types/enums';
 import { MAX_FILES_PER_USER } from './constants';
 import connectDB from './db';
 
@@ -23,5 +23,9 @@ export async function canEditFile(userId: string, fileId: string): Promise<boole
 	const file = await CodeFile.findById(fileId);
 	if (!file) return false;
 
-	return file.createdBy.toString() === userId;
+	if (file.createdBy.toString() === userId) return true;
+
+	if (file.editMode === FileEditMode.COLLABORATIVE) return true;
+
+	return false;
 }
