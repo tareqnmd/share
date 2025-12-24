@@ -25,6 +25,7 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 	const router = useRouter();
 
 	const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+	const titleSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const lastSavedContentRef = useRef(file.content);
 	const lastSavedTitleRef = useRef(file.title);
 	const lastSaveTimeRef = useRef<number>(0);
@@ -56,6 +57,10 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 		if (saveTimeoutRef.current) {
 			clearTimeout(saveTimeoutRef.current);
 			saveTimeoutRef.current = null;
+		}
+		if (titleSaveTimeoutRef.current) {
+			clearTimeout(titleSaveTimeoutRef.current);
+			titleSaveTimeoutRef.current = null;
 		}
 	}, [file._id, file.content, file.title]);
 
@@ -146,6 +151,10 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 				clearTimeout(saveTimeoutRef.current);
 				saveTimeoutRef.current = null;
 			}
+			if (titleSaveTimeoutRef.current) {
+				clearTimeout(titleSaveTimeoutRef.current);
+				titleSaveTimeoutRef.current = null;
+			}
 
 			const pendingContent = pendingContentRef.current;
 
@@ -217,8 +226,15 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 
 	const handleTitleChange = (newTitle: string) => {
 		setTitle(newTitle);
+
+		if (titleSaveTimeoutRef.current) {
+			clearTimeout(titleSaveTimeoutRef.current);
+		}
+
 		if (newTitle !== lastSavedTitleRef.current) {
-			handleSettingsUpdate({ title: newTitle });
+			titleSaveTimeoutRef.current = setTimeout(() => {
+				handleSettingsUpdate({ title: newTitle });
+			}, SAVE_DEBOUNCE_MS);
 		}
 	};
 
