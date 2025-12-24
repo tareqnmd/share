@@ -31,8 +31,9 @@ export default function RootLayout({
 		<html
 			lang="en"
 			className={`${poppins.variable} ${jetbrainsMono.variable}`}
+			suppressHydrationWarning
 		>
-			<body>
+			<body suppressHydrationWarning>
 				<Providers>
 					<div className="min-h-screen flex flex-col">
 						<Navbar />
