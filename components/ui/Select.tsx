@@ -1,6 +1,7 @@
 'use client';
 
 import { forwardRef, SelectHTMLAttributes } from 'react';
+import { ChevronDownIcon } from '@/components/icons';
 
 export interface SelectOption {
 	value: string;
@@ -62,19 +63,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 						))}
 					</select>
 					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-						<svg
-							className="h-4 w-4 text-neutral-400"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-						>
-							<path
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								strokeWidth={2}
-								d="M19 9l-7 7-7-7"
-							/>
-						</svg>
+						<ChevronDownIcon className="h-4 w-4 text-neutral-400" />
 					</div>
 				</div>
 				{error && (
@@ -88,4 +77,3 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
 Select.displayName = 'Select';
 
 export default Select;
-

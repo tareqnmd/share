@@ -43,7 +43,6 @@ export default async function CodePage({ params }: { params: Promise<{ id: strin
             />
         );
     } catch (error) {
-        // If it's a redirect or notFound error, re-throw it so Next.js handles it
         const err = error as Error & { digest?: string };
         if (err?.digest?.startsWith('NEXT_REDIRECT') || err?.digest?.startsWith('NEXT_NOT_FOUND')) {
             throw error;

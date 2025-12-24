@@ -1,5 +1,6 @@
 'use client';
 
+import { CheckIcon, DotsVerticalIcon } from '@/components/icons';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
 export interface DropdownMenuItem {
@@ -54,48 +55,23 @@ export default function DropdownMenu({ sections, trigger }: DropdownMenuProps) {
 				aria-label="Open menu"
 				aria-expanded={isOpen}
 			>
-				{trigger || (
-					<svg
-						className="w-5 h-5"
-						fill="currentColor"
-						viewBox="0 0 24 24"
-					>
-						<circle
-							cx="12"
-							cy="5"
-							r="2"
-						/>
-						<circle
-							cx="12"
-							cy="12"
-							r="2"
-						/>
-						<circle
-							cx="12"
-							cy="19"
-							r="2"
-						/>
-					</svg>
-				)}
+				{trigger || <DotsVerticalIcon className="w-5 h-5" />}
 			</button>
 
 			{isOpen && (
 				<div className="absolute right-0 mt-2 w-56 bg-neutral-900 border border-neutral-700 rounded-lg shadow-xl z-50 py-1 animate-in">
 					{sections.map((section, sectionIndex) => (
 						<div key={sectionIndex}>
-							{/* Divider between sections */}
 							{sectionIndex > 0 && (
 								<div className="my-1 border-t border-neutral-700" />
 							)}
 
-							{/* Section title */}
 							{section.title && (
 								<div className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
 									{section.title}
 								</div>
 							)}
 
-							{/* Section items */}
 							{section.items.map((item, itemIndex) => (
 								<button
 									key={itemIndex}
@@ -124,13 +100,7 @@ export default function DropdownMenu({ sections, trigger }: DropdownMenuProps) {
 									)}
 									<span className="flex-1">{item.label}</span>
 									{item.active && (
-										<svg
-											className="w-4 h-4 text-primary-400"
-											fill="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-										</svg>
+										<CheckIcon className="w-4 h-4 text-primary-400" />
 									)}
 								</button>
 							))}

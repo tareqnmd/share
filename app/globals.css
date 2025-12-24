@@ -1,7 +1,6 @@
 @import 'tailwindcss';
 
 @theme {
-	/* Colors - Primary (Blue) */
 	--color-primary-50: #eff6ff;
 	--color-primary-100: #dbeafe;
 	--color-primary-200: #bfdbfe;
@@ -10,7 +9,6 @@
 	--color-primary-600: #2563eb;
 	--color-primary-700: #1d4ed8;
 
-	/* Colors - Neutral (Slate) */
 	--color-neutral-50: #f8fafc;
 	--color-neutral-100: #f1f5f9;
 	--color-neutral-200: #e2e8f0;
@@ -23,7 +21,6 @@
 	--color-neutral-900: #0f172a;
 	--color-neutral-950: #020617;
 
-	/* Colors - Success (Green) */
 	--color-success-50: #f0fdf4;
 	--color-success-100: #dcfce7;
 	--color-success-400: #4ade80;
@@ -32,7 +29,6 @@
 	--color-success-700: #15803d;
 	--color-success-800: #166534;
 
-	/* Colors - Danger (Red) */
 	--color-danger-50: #fef2f2;
 	--color-danger-100: #fee2e2;
 	--color-danger-400: #f87171;
@@ -40,13 +36,11 @@
 	--color-danger-600: #dc2626;
 	--color-danger-700: #b91c1c;
 
-	/* Colors - Warning (Amber) */
 	--color-warning-50: #fffbeb;
 	--color-warning-100: #fef3c7;
 	--color-warning-400: #fbbf24;
 	--color-warning-600: #d97706;
 
-	/* Font Family */
 	--font-sans: var(--font-pt-sans), 'PT Sans', -apple-system, BlinkMacSystemFont,
 		'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 	--font-mono: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code',
@@ -122,7 +116,6 @@
 		font-family: var(--font-mono);
 	}
 
-	/* Dropdown animations */
 	@keyframes fadeIn {
 		from {
 			opacity: 0;
