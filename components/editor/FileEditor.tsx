@@ -215,9 +215,10 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 		});
 	};
 
-	const handleTitleBlur = () => {
-		if (title !== lastSavedTitleRef.current) {
-			handleSettingsUpdate({ title });
+	const handleTitleChange = (newTitle: string) => {
+		setTitle(newTitle);
+		if (newTitle !== lastSavedTitleRef.current) {
+			handleSettingsUpdate({ title: newTitle });
 		}
 	};
 
@@ -236,12 +237,7 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="grid grid-cols-[1fr_auto] items-center gap-4">
-				<FileHeader
-					title={title}
-					canEdit={canEdit}
-					onTitleChange={setTitle}
-					onTitleBlur={handleTitleBlur}
-				/>
+				<FileHeader title={title} canEdit={canEdit} onTitleChange={handleTitleChange} />
 
 				<FileControls
 					language={language}

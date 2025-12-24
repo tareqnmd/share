@@ -7,22 +7,15 @@ interface FileHeaderProps {
 	title: string;
 	canEdit: boolean;
 	onTitleChange: (value: string) => void;
-	onTitleBlur: () => void;
 }
 
-export default function FileHeader({
-	title,
-	canEdit,
-	onTitleChange,
-	onTitleBlur,
-}: FileHeaderProps) {
+export default function FileHeader({ title, canEdit, onTitleChange }: FileHeaderProps) {
 	return (
 		<div className="flex flex-col gap-3 w-full min-w-0">
 			{canEdit ? (
 				<input
 					value={title}
 					onChange={(e) => onTitleChange(e.target.value)}
-					onBlur={onTitleBlur}
 					onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
 					className="text-xl sm:text-2xl font-bold bg-transparent border-transparent 
 						hover:border-neutral-700 focus:border-primary-500 
