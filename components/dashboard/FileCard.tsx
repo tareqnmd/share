@@ -10,25 +10,58 @@ interface FileCardProps {
 }
 
 export default function FileCard({ id, title, language, visibility, updatedAt }: FileCardProps) {
+	const isPublic = visibility === FileVisibility.PUBLIC;
+
 	return (
 		<Link
 			href={`${AppRoutes.CODE}/${id}`}
-			className="card flex flex-col gap-3 transition-shadow cursor-pointer"
+			className="group relative flex flex-col bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-all duration-300 hover:border-neutral-700 hover:shadow-xl hover:shadow-black/40 hover:-translate-y-0.5"
 		>
-			<div className="flex justify-between items-start gap-2">
-				<h3 className="font-bold text-lg truncate text-neutral-50">{title}</h3>
+			<div className="flex items-center justify-between px-4 py-2.5 bg-neutral-800/60 border-b border-neutral-800">
+				<div className="flex items-center gap-2">
+					<div className="w-2 h-2 rounded-full bg-primary-500 animate-pulse" />
+					<span className="font-mono text-xs font-medium text-primary-400 uppercase tracking-wider">
+						{language}
+					</span>
+				</div>
 				<span
-					className={`badge shrink-0 ${
-						visibility === FileVisibility.PUBLIC ? 'badge-success' : 'badge-neutral'
+					className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-full ${
+						isPublic
+							? 'bg-success-500/15 text-success-400 ring-1 ring-success-500/30'
+							: 'bg-neutral-700/50 text-neutral-400 ring-1 ring-neutral-600/50'
 					}`}
 				>
+					<span
+						className={`w-1.5 h-1.5 rounded-full ${isPublic ? 'bg-success-400' : 'bg-neutral-500'}`}
+					/>
 					{visibility}
 				</span>
 			</div>
-			<p className="text-sm text-neutral-400">{language}</p>
-			<div className="text-xs text-neutral-500 mt-auto">
-				Updated {new Date(updatedAt).toLocaleDateString()}
+
+			<div className="flex flex-col flex-1 p-4 gap-3">
+				<h3 className="font-semibold text-base text-neutral-100 truncate group-hover:text-primary-400 transition-colors">
+					{title}
+				</h3>
+
+				<div className="mt-auto flex items-center gap-2 text-xs text-neutral-500">
+					<svg
+						className="w-3.5 h-3.5"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						strokeWidth={2}
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+						/>
+					</svg>
+					<span>{new Date(updatedAt).toLocaleDateString()}</span>
+				</div>
 			</div>
+
+			<div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none bg-linear-to-t from-primary-500/5 via-transparent to-transparent" />
 		</Link>
 	);
 }
