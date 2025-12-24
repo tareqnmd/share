@@ -1,13 +1,19 @@
 import Navbar from '@/components/Navbar';
 import { Providers } from '@/components/Providers';
 import type { Metadata } from 'next';
-import { PT_Sans } from 'next/font/google';
+import { JetBrains_Mono, Poppins } from 'next/font/google';
 import './globals.css';
 
-const ptSans = PT_Sans({
+const poppins = Poppins({
 	subsets: ['latin'],
 	weight: ['400', '700'],
 	variable: '--font-pt-sans',
+	display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+	subsets: ['latin'],
+	variable: '--font-jetbrains-mono',
 	display: 'swap',
 });
 
@@ -24,7 +30,7 @@ export default function RootLayout({
 	return (
 		<html
 			lang="en"
-			className={`${ptSans.variable}`}
+			className={`${poppins.variable} ${jetbrainsMono.variable}`}
 		>
 			<body>
 				<Providers>

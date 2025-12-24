@@ -1,9 +1,9 @@
+import { PlusIcon } from '@/components/icons';
 import SignIn from '@/components/shared/SignIn';
 import { authOptions } from '@/lib/auth';
 import { AppRoutes } from '@/types/enums';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
-import { PlusIcon } from '@/components/icons';
 
 export default async function Home() {
 	const session = await getServerSession(authOptions);
