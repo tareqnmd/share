@@ -1,85 +1,16 @@
 'use client';
 
-import {
-	deleteCodeFile,
-	updateCodeFile,
-	updateCodeFileSettings,
-} from '@/app/actions';
-import {
-	GlobeIcon,
-	LockIcon,
-	TrashIcon,
-	UserIcon,
-	UsersIcon,
-} from '@/components/icons';
+import { deleteCodeFile, updateCodeFile, updateCodeFileSettings } from '@/app/actions';
 import CopyButton from '@/components/ui/CopyButton';
-import DropdownMenu from '@/components/ui/DropdownMenu';
-import Select from '@/components/ui/Select';
-import {
-	LANGUAGE_OPTIONS,
-	MAX_CONTENT_LENGTH,
-	MIN_SAVE_INTERVAL_MS,
-	SAVE_DEBOUNCE_MS,
-} from '@/lib/constants';
-import {
-	AppRoutes,
-	DropdownItemVariant,
-	FileEditMode,
-	FileVisibility,
-	SaveStatus,
-} from '@/types/enums';
-import {
-	CodeFile,
-	FileEditorProps,
-	SaveStatusIndicatorProps,
-} from '@/types/types';
+import { MAX_CONTENT_LENGTH, MIN_SAVE_INTERVAL_MS, SAVE_DEBOUNCE_MS } from '@/lib/constants';
+import { AppRoutes, SaveStatus } from '@/types/enums';
+import { FileEditorProps } from '@/types/types';
 import { CodeFileInput } from '@/utils/validations';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import CodeEditor from './CodeEditor';
-
-function SaveStatusIndicator({
-	status,
-	isSaving,
-	canEdit,
-	error,
-}: SaveStatusIndicatorProps) {
-	if (!canEdit) return null;
-
-	return (
-		<div className="flex items-center gap-2 text-xs">
-			{error && (
-				<>
-					<div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-					<span
-						className="text-red-400 max-w-[200px] truncate"
-						title={error}
-					>
-						{error}
-					</span>
-				</>
-			)}
-			{!error && (status === SaveStatus.SAVING || isSaving) && (
-				<>
-					<div className="w-2 h-2 rounded-full bg-warning-500 animate-pulse" />
-					<span className="text-warning-400">Saving...</span>
-				</>
-			)}
-			{!error && status === SaveStatus.SAVED && !isSaving && (
-				<>
-					<div className="w-2 h-2 rounded-full bg-success-500" />
-					<span className="text-success-400">Saved</span>
-				</>
-			)}
-			{!error && status === SaveStatus.UNSAVED && !isSaving && (
-				<>
-					<div className="w-2 h-2 rounded-full bg-neutral-500" />
-					<span className="text-neutral-400">Unsaved</span>
-				</>
-			)}
-		</div>
-	);
-}
+import FileControls from './FileControls';
+import FileHeader from './FileHeader';
 
 export default function FileEditor({
 	file,
@@ -298,120 +229,33 @@ export default function FileEditor({
 		});
 	};
 
-	const menuSections = [
-		{
-			title: 'Visibility',
-			items: [
-				{
-					label: 'Public',
-					onClick: () =>
-						handleSettingsUpdate({ visibility: FileVisibility.PUBLIC }),
-					active: visibility === FileVisibility.PUBLIC,
-					icon: <GlobeIcon />,
-				},
-				{
-					label: 'Private',
-					onClick: () =>
-						handleSettingsUpdate({ visibility: FileVisibility.PRIVATE }),
-					active: visibility === FileVisibility.PRIVATE,
-					icon: <LockIcon />,
-				},
-			],
-		},
-		{
-			title: 'Edit Access',
-			items: [
-				{
-					label: 'Owner Only',
-					onClick: () => handleSettingsUpdate({ editMode: FileEditMode.OWNER }),
-					active: editMode === FileEditMode.OWNER,
-					icon: <UserIcon />,
-				},
-				{
-					label: 'Collaborative',
-					onClick: () =>
-						handleSettingsUpdate({ editMode: FileEditMode.COLLABORATIVE }),
-					active: editMode === FileEditMode.COLLABORATIVE,
-					icon: <UsersIcon />,
-				},
-			],
-		},
-		...(isOwner
-			? [
-					{
-						title: 'Danger Zone',
-						items: [
-							{
-								label: isDeleting ? 'Deleting...' : 'Delete File',
-								onClick: handleDelete,
-								variant: DropdownItemVariant.DANGER,
-								disabled: isDeleting,
-								icon: <TrashIcon />,
-							},
-						],
-					},
-			  ]
-			: []),
-	];
-
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-neutral-800 pb-4">
-				<div className="flex flex-col gap-1 flex-1 w-full">
-					<div className="flex items-center gap-3">
-						{canEdit ? (
-							<input
-								value={title}
-								onChange={(e) => setTitle(e.target.value)}
-								onBlur={() => handleSettingsUpdate({ title })}
-								className="text-2xl font-bold bg-transparent border-none focus:ring-0 w-full p-0 text-neutral-50 focus:outline-none"
-								placeholder="File Title"
-							/>
-						) : (
-							<h1 className="text-2xl font-bold text-neutral-50">{title}</h1>
-						)}
-					</div>
-
-					<div className="flex items-center gap-4 text-sm text-neutral-400">
-						<span>
-							Created by {file.createdBy.name} •{' '}
-							{new Date(file.createdAt).toLocaleDateString()}
-						</span>
-						<SaveStatusIndicator
-							status={saveStatus}
-							isSaving={isSaving}
-							canEdit={canEdit}
-							error={saveError}
-						/>
-						<span
-							className={`text-xs px-2 py-0.5 rounded-full ${
-								visibility === FileVisibility.PUBLIC
-									? 'bg-success-500/20 text-success-400'
-									: 'bg-neutral-700 text-neutral-400'
-							}`}
-						>
-							{visibility === FileVisibility.PUBLIC ? 'Public' : 'Private'}
-						</span>
-					</div>
-				</div>
+				<FileHeader
+					title={title}
+					visibility={visibility}
+					createdByName={file.createdBy.name}
+					createdAt={file.createdAt}
+					canEdit={canEdit}
+					saveStatus={saveStatus}
+					isSaving={isSaving}
+					saveError={saveError}
+					onTitleChange={setTitle}
+					onTitleBlur={() => handleSettingsUpdate({ title })}
+				/>
 
 				<div className="flex flex-wrap gap-2 items-center">
-					{canEdit && (
-						<>
-							<Select
-								options={LANGUAGE_OPTIONS}
-								value={language}
-								onChange={(e) =>
-									handleSettingsUpdate({ language: e.target.value })
-								}
-							/>
-
-							<DropdownMenu sections={menuSections} />
-						</>
-					)}
-					{!canEdit && (
-						<div className="text-sm text-neutral-500 italic">Read Only</div>
-					)}
+					<FileControls
+						language={language}
+						visibility={visibility}
+						editMode={editMode}
+						canEdit={canEdit}
+						isOwner={isOwner}
+						isDeleting={isDeleting}
+						onSettingsUpdate={handleSettingsUpdate}
+						onDelete={handleDelete}
+					/>
 				</div>
 			</div>
 

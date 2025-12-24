@@ -9,7 +9,6 @@ import {
 	SaveStatus,
 } from './enums';
 
-// UI Components
 export interface ButtonProps {
 	variant?: ButtonVariant;
 	size?: ButtonSize;
@@ -43,7 +42,6 @@ export interface DropdownMenuSection {
 	items: DropdownMenuItem[];
 }
 
-// File/Editor
 export interface FileAuthor {
 	_id: string;
 	name: string;
