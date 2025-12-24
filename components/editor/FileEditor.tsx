@@ -2,7 +2,7 @@
 
 import { deleteCodeFile, updateCodeFile, updateCodeFileSettings } from '@/app/actions';
 import CopyButton from '@/components/ui/CopyButton';
-import { MAX_CONTENT_LENGTH, MIN_SAVE_INTERVAL_MS, SAVE_DEBOUNCE_MS } from '@/lib/constants';
+import { MAX_CONTENT_LENGTH, SAVE_DEBOUNCE_MS } from '@/lib/constants';
 import { AppRoutes, SaveStatus } from '@/types/enums';
 import { FileEditorProps } from '@/types/types';
 import { CodeFileInput } from '@/utils/validations';
@@ -18,23 +18,18 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 	const [language, setLanguage] = useState(file.language);
 	const [visibility, setVisibility] = useState(file.visibility);
 	const [editMode, setEditMode] = useState(file.editMode);
-	const [isSaving, startTransition] = useTransition();
+	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, startDeleteTransition] = useTransition();
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>(SaveStatus.SAVED);
 	const [saveError, setSaveError] = useState<string | null>(null);
 	const router = useRouter();
 
 	const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const titleSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-	const lastSavedContentRef = useRef(file.content);
-	const lastSavedTitleRef = useRef(file.title);
-	const lastSaveTimeRef = useRef<number>(0);
-	const pendingContentRef = useRef<string | null>(null);
+	const lastSavedRef = useRef({ content: file.content, title: file.title });
+	const pendingRef = useRef({ content: file.content, title: file.title });
 	const isMountedRef = useRef(true);
-	const hasUserEditedRef = useRef(false);
 
 	const [prevFileId, setPrevFileId] = useState(file._id);
-
 	const isOwner = file.createdBy._id === currentUserId;
 
 	if (file._id !== prevFileId) {
@@ -46,76 +41,70 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 		setEditMode(file.editMode);
 		setSaveStatus(SaveStatus.SAVED);
 		setSaveError(null);
+		lastSavedRef.current = { content: file.content, title: file.title };
+		pendingRef.current = { content: file.content, title: file.title };
 	}
 
-	useEffect(() => {
-		lastSavedContentRef.current = file.content;
-		lastSavedTitleRef.current = file.title;
-		pendingContentRef.current = null;
-		hasUserEditedRef.current = false;
+	const save = useCallback(async () => {
+		if (!isMountedRef.current) return;
 
+		const { content: pendingContent, title: pendingTitle } = pendingRef.current;
+		const { content: savedContent, title: savedTitle } = lastSavedRef.current;
+
+		const contentChanged = pendingContent !== savedContent;
+		const titleChanged = pendingTitle !== savedTitle;
+
+		if (!contentChanged && !titleChanged) {
+			setSaveStatus(SaveStatus.SAVED);
+			return;
+		}
+
+		if (pendingContent.length > MAX_CONTENT_LENGTH) {
+			setSaveError(`Content exceeds maximum length of ${MAX_CONTENT_LENGTH} characters`);
+			setSaveStatus(SaveStatus.UNSAVED);
+			return;
+		}
+
+		setIsSaving(true);
+		setSaveStatus(SaveStatus.SAVING);
+		setSaveError(null);
+
+		try {
+			await updateCodeFile(file._id, {
+				content: pendingContent,
+				title: titleChanged ? pendingTitle : undefined,
+			});
+
+			if (isMountedRef.current) {
+				lastSavedRef.current = { content: pendingContent, title: pendingTitle };
+				setSaveStatus(SaveStatus.SAVED);
+			}
+		} catch (error) {
+			if (isMountedRef.current) {
+				const errorMessage = error instanceof Error ? error.message : 'Failed to save';
+				setSaveError(errorMessage);
+				setSaveStatus(SaveStatus.UNSAVED);
+			}
+		} finally {
+			if (isMountedRef.current) {
+				setIsSaving(false);
+			}
+		}
+	}, [file._id]);
+
+	const scheduleSave = useCallback(() => {
 		if (saveTimeoutRef.current) {
 			clearTimeout(saveTimeoutRef.current);
-			saveTimeoutRef.current = null;
 		}
-		if (titleSaveTimeoutRef.current) {
-			clearTimeout(titleSaveTimeoutRef.current);
-			titleSaveTimeoutRef.current = null;
-		}
-	}, [file._id, file.content, file.title]);
-
-	const saveContent = useCallback(
-		async (newContent: string, isImmediate = false): Promise<boolean> => {
-			if (!isMountedRef.current) return false;
-			if (newContent === lastSavedContentRef.current) return true;
-
-			if (newContent.length > MAX_CONTENT_LENGTH) {
-				setSaveError(`Content exceeds maximum length of ${MAX_CONTENT_LENGTH} characters`);
-				setSaveStatus(SaveStatus.UNSAVED);
-				return false;
-			}
-
-			const now = Date.now();
-			if (!isImmediate && now - lastSaveTimeRef.current < MIN_SAVE_INTERVAL_MS) {
-				pendingContentRef.current = newContent;
-				return false;
-			}
-
-			setSaveStatus(SaveStatus.SAVING);
-			setSaveError(null);
-
-			try {
-				await updateCodeFile(file._id, newContent);
-				if (isMountedRef.current) {
-					lastSavedContentRef.current = newContent;
-					lastSaveTimeRef.current = Date.now();
-					pendingContentRef.current = null;
-					setSaveStatus(SaveStatus.SAVED);
-				}
-				return true;
-			} catch (error) {
-				if (isMountedRef.current) {
-					const errorMessage = error instanceof Error ? error.message : 'Failed to save';
-					setSaveError(errorMessage);
-					setSaveStatus(SaveStatus.UNSAVED);
-				}
-				return false;
-			}
-		},
-		[file._id]
-	);
+		saveTimeoutRef.current = setTimeout(save, SAVE_DEBOUNCE_MS);
+	}, [save]);
 
 	const handleContentChange = useCallback(
 		(newContent: string) => {
 			setContent(newContent);
+			pendingRef.current.content = newContent;
 
-			if (!canEdit || newContent === lastSavedContentRef.current) {
-				if (newContent === lastSavedContentRef.current) {
-					setSaveStatus(SaveStatus.SAVED);
-					setSaveError(null);
-				}
-				return;
-			}
+			if (!canEdit) return;
 
 			if (newContent.length > MAX_CONTENT_LENGTH) {
 				setSaveError(`Content exceeds maximum length (${newContent.length}/${MAX_CONTENT_LENGTH})`);
@@ -123,22 +112,32 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 				return;
 			}
 
-			hasUserEditedRef.current = true;
-			setSaveStatus(SaveStatus.UNSAVED);
-			setSaveError(null);
-			pendingContentRef.current = newContent;
-
-			if (saveTimeoutRef.current) {
-				clearTimeout(saveTimeoutRef.current);
+			if (newContent !== lastSavedRef.current.content) {
+				setSaveStatus(SaveStatus.UNSAVED);
+				setSaveError(null);
+				scheduleSave();
+			} else if (pendingRef.current.title === lastSavedRef.current.title) {
+				setSaveStatus(SaveStatus.SAVED);
 			}
-
-			saveTimeoutRef.current = setTimeout(() => {
-				startTransition(async () => {
-					await saveContent(newContent);
-				});
-			}, SAVE_DEBOUNCE_MS);
 		},
-		[canEdit, saveContent]
+		[canEdit, scheduleSave]
+	);
+
+	const handleTitleChange = useCallback(
+		(newTitle: string) => {
+			setTitle(newTitle);
+			pendingRef.current.title = newTitle;
+
+			if (!canEdit) return;
+
+			if (newTitle !== lastSavedRef.current.title) {
+				setSaveStatus(SaveStatus.UNSAVED);
+				scheduleSave();
+			} else if (pendingRef.current.content === lastSavedRef.current.content) {
+				setSaveStatus(SaveStatus.SAVED);
+			}
+		},
+		[canEdit, scheduleSave]
 	);
 
 	useEffect(() => {
@@ -149,25 +148,17 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 
 			if (saveTimeoutRef.current) {
 				clearTimeout(saveTimeoutRef.current);
-				saveTimeoutRef.current = null;
-			}
-			if (titleSaveTimeoutRef.current) {
-				clearTimeout(titleSaveTimeoutRef.current);
-				titleSaveTimeoutRef.current = null;
 			}
 
-			const pendingContent = pendingContentRef.current;
+			const { content: pendingContent, title: pendingTitle } = pendingRef.current;
+			const { content: savedContent, title: savedTitle } = lastSavedRef.current;
 
-			if (
-				hasUserEditedRef.current &&
-				pendingContent &&
-				pendingContent !== lastSavedContentRef.current &&
-				canEdit
-			) {
+			if ((pendingContent !== savedContent || pendingTitle !== savedTitle) && canEdit) {
 				try {
 					const data = JSON.stringify({
 						fileId: file._id,
 						content: pendingContent,
+						title: pendingTitle,
 					});
 					navigator.sendBeacon('/api/save-on-unload', data);
 				} catch {}
@@ -175,11 +166,12 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 		};
 	}, [file._id, canEdit]);
 
+	// Warn before leaving with unsaved changes
 	useEffect(() => {
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-			const hasUnsavedChanges =
-				pendingContentRef.current !== null &&
-				pendingContentRef.current !== lastSavedContentRef.current;
+			const { content: pendingContent, title: pendingTitle } = pendingRef.current;
+			const { content: savedContent, title: savedTitle } = lastSavedRef.current;
+			const hasUnsavedChanges = pendingContent !== savedContent || pendingTitle !== savedTitle;
 
 			if (hasUnsavedChanges && canEdit) {
 				e.preventDefault();
@@ -191,51 +183,18 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 		return () => window.removeEventListener('beforeunload', handleBeforeUnload);
 	}, [canEdit]);
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			const pending = pendingContentRef.current;
-			if (pending && pending !== lastSavedContentRef.current && canEdit) {
-				const timeSinceLastSave = Date.now() - lastSaveTimeRef.current;
-				if (timeSinceLastSave >= MIN_SAVE_INTERVAL_MS) {
-					startTransition(async () => {
-						await saveContent(pending);
-					});
-				}
-			}
-		}, MIN_SAVE_INTERVAL_MS);
-
-		return () => clearInterval(interval);
-	}, [canEdit, saveContent]);
-
 	const handleSettingsUpdate = (updates: Partial<CodeFileInput>) => {
-		startTransition(async () => {
+		const doUpdate = async () => {
 			try {
 				await updateCodeFileSettings(file._id, updates);
-				if (updates.title) {
-					setTitle(updates.title);
-					lastSavedTitleRef.current = updates.title;
-				}
 				if (updates.language) setLanguage(updates.language);
 				if (updates.visibility) setVisibility(updates.visibility);
 				if (updates.editMode) setEditMode(updates.editMode);
 			} catch {
 				alert('Failed to update settings');
 			}
-		});
-	};
-
-	const handleTitleChange = (newTitle: string) => {
-		setTitle(newTitle);
-
-		if (titleSaveTimeoutRef.current) {
-			clearTimeout(titleSaveTimeoutRef.current);
-		}
-
-		if (newTitle !== lastSavedTitleRef.current) {
-			titleSaveTimeoutRef.current = setTimeout(() => {
-				handleSettingsUpdate({ title: newTitle });
-			}, SAVE_DEBOUNCE_MS);
-		}
+		};
+		doUpdate();
 	};
 
 	const handleDelete = () => {

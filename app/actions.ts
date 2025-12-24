@@ -5,12 +5,7 @@ import connectDB from '@/lib/db';
 import { canCreateFile, canEditFile } from '@/lib/permissions';
 import CodeFile from '@/models/CodeFile';
 import { AppRoutes } from '@/types/enums';
-import {
-	CodeFileInput,
-	codeFileSchema,
-	contentUpdateSchema,
-	objectIdSchema,
-} from '@/utils/validations';
+import { CodeFileInput, codeFileSchema, objectIdSchema } from '@/utils/validations';
 import { getServerSession } from 'next-auth';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
@@ -61,7 +56,12 @@ export async function createCodeFile(data: CodeFileInput) {
 	}
 }
 
-export async function updateCodeFile(id: string, content: string) {
+interface UpdateCodeFileData {
+	content: string;
+	title?: string;
+}
+
+export async function updateCodeFile(id: string, data: UpdateCodeFileData) {
 	try {
 		const validatedId = validateFileId(id);
 
@@ -70,34 +70,31 @@ export async function updateCodeFile(id: string, content: string) {
 			throw new Error('Unauthorized');
 		}
 
-		const validatedContent = contentUpdateSchema.parse({ content });
-
 		await connectDB();
 		const canEdit = await canEditFile(session.user.id, validatedId);
 		if (!canEdit) {
 			throw new Error('Forbidden');
 		}
 
-		const result = await CodeFile.findByIdAndUpdate(
-			validatedId,
-			{ content: validatedContent.content },
-			{ new: true }
-		);
+		const updateData: { content: string; title?: string } = { content: data.content };
+		if (data.title !== undefined) {
+			updateData.title = data.title;
+		}
+
+		const result = await CodeFile.findByIdAndUpdate(validatedId, updateData, { new: true });
 
 		if (!result) {
 			throw new Error('File not found');
 		}
 
-		revalidatePath(`${AppRoutes.CODE}/${validatedId}`);
-		return { success: true, contentLength: validatedContent.content.length };
-	} catch (error) {
-		if (error instanceof z.ZodError) {
-			const err = error as unknown as ZodErrorLike;
-			const issues = err.errors || err.issues || [];
-			throw new Error(`Content validation failed: ${issues.map((e) => e.message).join(', ')}`);
+		if (data.title !== undefined) {
+			revalidatePath(AppRoutes.DASHBOARD);
 		}
-		console.error('Failed to update file content:', error);
-		throw error instanceof Error ? error : new Error('Failed to update file content');
+
+		return { success: true };
+	} catch (error) {
+		console.error('Failed to update file:', error);
+		throw error instanceof Error ? error : new Error('Failed to update file');
 	}
 }
 
@@ -125,7 +122,9 @@ export async function updateCodeFileSettings(id: string, data: Partial<CodeFileI
 			throw new Error('File not found');
 		}
 
-		revalidatePath(`${AppRoutes.CODE}/${validatedId}`);
+		if (data.visibility || data.editMode) {
+			revalidatePath(`${AppRoutes.CODE}/${validatedId}`);
+		}
 		revalidatePath(AppRoutes.DASHBOARD);
 		return { success: true };
 	} catch (error) {

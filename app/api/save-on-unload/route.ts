@@ -4,7 +4,7 @@ import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db';
 import { canEditFile } from '@/lib/permissions';
 import CodeFile from '@/models/CodeFile';
-import { contentUpdateSchema, objectIdSchema } from '@/utils/validations';
+import { objectIdSchema } from '@/utils/validations';
 import { getServerSession } from 'next-auth';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -16,21 +16,15 @@ export async function POST(request: NextRequest) {
 		}
 
 		const body = await request.json();
-		const { fileId, content } = body;
+		const { fileId, content, title } = body;
 
 		const idResult = objectIdSchema.safeParse(fileId);
 		if (!idResult.success) {
 			return NextResponse.json({ error: 'Invalid file ID' }, { status: 400 });
 		}
 
-		const contentResult = contentUpdateSchema.safeParse({ content });
-		if (!contentResult.success) {
-			return NextResponse.json(
-				{
-					error: contentResult.error.issues.map((e: { message: string }) => e.message).join(', '),
-				},
-				{ status: 400 }
-			);
+		if (typeof content !== 'string') {
+			return NextResponse.json({ error: 'Invalid content' }, { status: 400 });
 		}
 
 		await connectDB();
@@ -40,20 +34,19 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 		}
 
-		const newContent = contentResult.data.content;
-
-		if (!newContent || newContent.trim() === '') {
+		if (!content || content.trim() === '') {
 			const existingFile = await CodeFile.findById(idResult.data).select('content');
 			if (existingFile?.content && existingFile.content.trim() !== '') {
 				return NextResponse.json({ success: true, skipped: true });
 			}
 		}
 
-		const result = await CodeFile.findByIdAndUpdate(
-			idResult.data,
-			{ content: newContent },
-			{ new: true }
-		);
+		const updateData: { content: string; title?: string } = { content };
+		if (title && typeof title === 'string') {
+			updateData.title = title;
+		}
+
+		const result = await CodeFile.findByIdAndUpdate(idResult.data, updateData, { new: true });
 
 		if (!result) {
 			return NextResponse.json({ error: 'File not found' }, { status: 404 });
