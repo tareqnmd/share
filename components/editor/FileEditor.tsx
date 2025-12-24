@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import CodeEditor from './CodeEditor';
 import FileControls from './FileControls';
-import FileHeader from './FileHeader';
+import FileHeader, { FileMetaInfo } from './FileHeader';
 
 export default function FileEditor({ file, canEdit, currentUserId }: FileEditorProps) {
 	const [content, setContent] = useState(file.content);
@@ -26,6 +26,7 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 
 	const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const lastSavedContentRef = useRef(file.content);
+	const lastSavedTitleRef = useRef(file.title);
 	const lastSaveTimeRef = useRef<number>(0);
 	const pendingContentRef = useRef<string | null>(null);
 	const isMountedRef = useRef(true);
@@ -48,6 +49,7 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 
 	useEffect(() => {
 		lastSavedContentRef.current = file.content;
+		lastSavedTitleRef.current = file.title;
 		pendingContentRef.current = null;
 		hasUserEditedRef.current = false;
 
@@ -55,7 +57,7 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 			clearTimeout(saveTimeoutRef.current);
 			saveTimeoutRef.current = null;
 		}
-	}, [file._id, file.content]);
+	}, [file._id, file.content, file.title]);
 
 	const saveContent = useCallback(
 		async (newContent: string, isImmediate = false): Promise<boolean> => {
@@ -200,7 +202,10 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 		startTransition(async () => {
 			try {
 				await updateCodeFileSettings(file._id, updates);
-				if (updates.title) setTitle(updates.title);
+				if (updates.title) {
+					setTitle(updates.title);
+					lastSavedTitleRef.current = updates.title;
+				}
 				if (updates.language) setLanguage(updates.language);
 				if (updates.visibility) setVisibility(updates.visibility);
 				if (updates.editMode) setEditMode(updates.editMode);
@@ -208,6 +213,13 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 				alert('Failed to update settings');
 			}
 		});
+	};
+
+	const handleTitleBlur = () => {
+		// Only update if title has actually changed
+		if (title !== lastSavedTitleRef.current) {
+			handleSettingsUpdate({ title });
+		}
 	};
 
 	const handleDelete = () => {
@@ -224,34 +236,28 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 
 	return (
 		<div className="flex flex-col gap-4">
-			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-neutral-800 pb-4">
+			{/* Top Row: Title (1fr) + Settings (auto) */}
+			<div className="grid grid-cols-[1fr_auto] items-center gap-4">
 				<FileHeader
 					title={title}
-					visibility={visibility}
-					createdByName={file.createdBy.name}
-					createdAt={file.createdAt}
 					canEdit={canEdit}
-					saveStatus={saveStatus}
-					isSaving={isSaving}
-					saveError={saveError}
 					onTitleChange={setTitle}
-					onTitleBlur={() => handleSettingsUpdate({ title })}
+					onTitleBlur={handleTitleBlur}
 				/>
 
-				<div className="flex flex-wrap gap-2 items-center">
-					<FileControls
-						language={language}
-						visibility={visibility}
-						editMode={editMode}
-						canEdit={canEdit}
-						isOwner={isOwner}
-						isDeleting={isDeleting}
-						onSettingsUpdate={handleSettingsUpdate}
-						onDelete={handleDelete}
-					/>
-				</div>
+				<FileControls
+					language={language}
+					visibility={visibility}
+					editMode={editMode}
+					canEdit={canEdit}
+					isOwner={isOwner}
+					isDeleting={isDeleting}
+					onSettingsUpdate={handleSettingsUpdate}
+					onDelete={handleDelete}
+				/>
 			</div>
 
+			{/* Code Editor */}
 			<div className="relative">
 				<div className="absolute top-3 right-3 z-10">
 					<CopyButton text={content} />
@@ -261,6 +267,19 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 					language={language}
 					readOnly={!canEdit}
 					onChange={(val) => handleContentChange(val || '')}
+				/>
+			</div>
+
+			{/* Bottom: Meta Info */}
+			<div className="border-t border-neutral-800 pt-4">
+				<FileMetaInfo
+					visibility={visibility}
+					createdByName={file.createdBy.name}
+					createdAt={file.createdAt}
+					canEdit={canEdit}
+					saveStatus={saveStatus}
+					isSaving={isSaving}
+					saveError={saveError}
 				/>
 			</div>
 		</div>
