@@ -16,6 +16,7 @@ import { useState, useTransition, useEffect, useRef, useCallback } from 'react';
 import CodeEditor from './CodeEditor';
 import Select from '@/components/ui/Select';
 import DropdownMenu from '@/components/ui/DropdownMenu';
+import CopyButton from '@/components/ui/CopyButton';
 
 interface FileProps {
 	_id: string;
@@ -255,12 +256,17 @@ export default function FileEditor({
 				</div>
 			</div>
 
-			<CodeEditor
-				code={content}
-				language={language}
-				readOnly={!canEdit}
-				onChange={(val) => setContent(val || '')}
-			/>
+			<div className="relative">
+				<div className="absolute top-3 right-3 z-10">
+					<CopyButton text={content} />
+				</div>
+				<CodeEditor
+					code={content}
+					language={language}
+					readOnly={!canEdit}
+					onChange={(val) => setContent(val || '')}
+				/>
+			</div>
 		</div>
 	);
 }
