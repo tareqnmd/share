@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, SelectHTMLAttributes } from 'react';
+import { forwardRef, SelectHTMLAttributes, useId } from 'react';
 import { ChevronDownIcon } from '@/components/icons';
 
 export interface SelectOption {
@@ -9,14 +9,15 @@ export interface SelectOption {
 }
 
 interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
-	options: SelectOption[];
+	options: readonly SelectOption[];
 	label?: string;
 	error?: string;
 }
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
 	({ options, label, error, className = '', id, ...props }, ref) => {
-		const selectId = id || `select-${Math.random().toString(36).substr(2, 9)}`;
+		const generatedId = useId();
+		const selectId = id || generatedId;
 
 		return (
 			<div className="flex flex-col gap-1">

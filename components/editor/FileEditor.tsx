@@ -37,6 +37,39 @@ interface FileEditorProps {
 	currentUserId?: string;
 }
 
+interface SaveStatusIndicatorProps {
+	status: 'saved' | 'saving' | 'unsaved';
+	isSaving: boolean;
+	canEdit: boolean;
+}
+
+function SaveStatusIndicator({ status, isSaving, canEdit }: SaveStatusIndicatorProps) {
+	if (!canEdit) return null;
+
+	return (
+		<div className="flex items-center gap-2 text-xs">
+			{status === 'saving' && (
+				<>
+					<div className="w-2 h-2 rounded-full bg-warning-500 animate-pulse" />
+					<span className="text-warning-400">Saving...</span>
+				</>
+			)}
+			{status === 'saved' && (
+				<>
+					<div className="w-2 h-2 rounded-full bg-success-500" />
+					<span className="text-success-400">Saved</span>
+				</>
+			)}
+			{status === 'unsaved' && !isSaving && (
+				<>
+					<div className="w-2 h-2 rounded-full bg-neutral-500" />
+					<span className="text-neutral-400">Unsaved</span>
+				</>
+			)}
+		</div>
+	);
+}
+
 export default function FileEditor({
 	file,
 	canEdit,
@@ -49,9 +82,7 @@ export default function FileEditor({
 	const [editMode, setEditMode] = useState(file.editMode);
 	const [isSaving, startTransition] = useTransition();
 	const [isDeleting, startDeleteTransition] = useTransition();
-	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>(
-		'saved'
-	);
+	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>('saved');
 	const router = useRouter();
 	const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 	const lastSavedContentRef = useRef(file.content);
@@ -76,9 +107,10 @@ export default function FileEditor({
 		[file._id]
 	);
 
-	useEffect(() => {
-		if (!canEdit) return;
-		if (content === lastSavedContentRef.current) return;
+	const handleContentChange = useCallback((newContent: string) => {
+		setContent(newContent);
+		
+		if (!canEdit || newContent === lastSavedContentRef.current) return;
 
 		setSaveStatus('unsaved');
 
@@ -87,15 +119,9 @@ export default function FileEditor({
 		}
 
 		saveTimeoutRef.current = setTimeout(() => {
-			saveContent(content);
+			saveContent(newContent);
 		}, 1000);
-
-		return () => {
-			if (saveTimeoutRef.current) {
-				clearTimeout(saveTimeoutRef.current);
-			}
-		};
-	}, [content, canEdit, saveContent]);
+	}, [canEdit, saveContent]);
 
 	useEffect(() => {
 		return () => {
@@ -184,33 +210,6 @@ export default function FileEditor({
 			: []),
 	];
 
-	const SaveStatusIndicator = () => {
-		if (!canEdit) return null;
-
-		return (
-			<div className="flex items-center gap-2 text-xs">
-				{saveStatus === 'saving' && (
-					<>
-						<div className="w-2 h-2 rounded-full bg-warning-500 animate-pulse" />
-						<span className="text-warning-400">Saving...</span>
-					</>
-				)}
-				{saveStatus === 'saved' && (
-					<>
-						<div className="w-2 h-2 rounded-full bg-success-500" />
-						<span className="text-success-400">Saved</span>
-					</>
-				)}
-				{saveStatus === 'unsaved' && !isSaving && (
-					<>
-						<div className="w-2 h-2 rounded-full bg-neutral-500" />
-						<span className="text-neutral-400">Unsaved</span>
-					</>
-				)}
-			</div>
-		);
-	};
-
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-neutral-800 pb-4">
@@ -234,7 +233,7 @@ export default function FileEditor({
 							Created by {file.createdBy.name} •{' '}
 							{new Date(file.createdAt).toLocaleDateString()}
 						</span>
-						<SaveStatusIndicator />
+						<SaveStatusIndicator status={saveStatus} isSaving={isSaving} canEdit={canEdit} />
 						<span
 							className={`text-xs px-2 py-0.5 rounded-full ${
 								visibility === FileVisibility.PUBLIC
@@ -275,7 +274,7 @@ export default function FileEditor({
 					code={content}
 					language={language}
 					readOnly={!canEdit}
-					onChange={(val) => setContent(val || '')}
+					onChange={(val) => handleContentChange(val || '')}
 				/>
 			</div>
 		</div>

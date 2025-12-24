@@ -13,8 +13,7 @@ export default async function Navbar() {
 	return (
 		<nav className="sticky top-0 z-50 border-b border-neutral-800/50 bg-neutral-950/80 backdrop-blur-xl">
 			<div className="app-container flex justify-between items-center h-16">
-				<Logo size="md" />
-
+				<Logo />
 				<div className="flex items-center gap-2">
 					{session ? (
 						<>
