@@ -1,8 +1,16 @@
 'use client';
 
-import { deleteCodeFile, updateCodeFile, updateCodeFileSettings } from '@/app/actions';
+import {
+	deleteCodeFile,
+	updateCodeFile,
+	updateCodeFileSettings,
+} from '@/app/actions';
 import CopyButton from '@/components/ui/CopyButton';
-import { MAX_CONTENT_LENGTH, MIN_SAVE_INTERVAL_MS, SAVE_DEBOUNCE_MS } from '@/lib/constants';
+import {
+	MAX_CONTENT_LENGTH,
+	MIN_SAVE_INTERVAL_MS,
+	SAVE_DEBOUNCE_MS,
+} from '@/lib/constants';
 import { AppRoutes, SaveStatus } from '@/types/enums';
 import { FileEditorProps } from '@/types/types';
 import { CodeFileInput } from '@/utils/validations';
@@ -33,6 +41,7 @@ export default function FileEditor({
 	const lastSaveTimeRef = useRef<number>(0);
 	const pendingContentRef = useRef<string | null>(null);
 	const isMountedRef = useRef(true);
+	const hasUserEditedRef = useRef(false);
 
 	const [prevFileId, setPrevFileId] = useState(file._id);
 
@@ -52,6 +61,7 @@ export default function FileEditor({
 	useEffect(() => {
 		lastSavedContentRef.current = file.content;
 		pendingContentRef.current = null;
+		hasUserEditedRef.current = false;
 
 		if (saveTimeoutRef.current) {
 			clearTimeout(saveTimeoutRef.current);
@@ -126,6 +136,7 @@ export default function FileEditor({
 				return;
 			}
 
+			hasUserEditedRef.current = true;
 			setSaveStatus(SaveStatus.UNSAVED);
 			setSaveError(null);
 			pendingContentRef.current = newContent;
@@ -155,7 +166,9 @@ export default function FileEditor({
 			}
 
 			const pendingContent = pendingContentRef.current;
+
 			if (
+				hasUserEditedRef.current &&
 				pendingContent &&
 				pendingContent !== lastSavedContentRef.current &&
 				canEdit

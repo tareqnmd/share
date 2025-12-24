@@ -42,9 +42,20 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 		}
 
+		const newContent = contentResult.data.content;
+
+		if (!newContent || newContent.trim() === '') {
+			const existingFile = await CodeFile.findById(idResult.data).select(
+				'content'
+			);
+			if (existingFile?.content && existingFile.content.trim() !== '') {
+				return NextResponse.json({ success: true, skipped: true });
+			}
+		}
+
 		const result = await CodeFile.findByIdAndUpdate(
 			idResult.data,
-			{ content: contentResult.data.content },
+			{ content: newContent },
 			{ new: true }
 		);
 
