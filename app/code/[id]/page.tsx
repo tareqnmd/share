@@ -2,12 +2,41 @@ import FileEditor from '@/components/editor/FileEditor';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db';
 import { canEditFile } from '@/lib/permissions';
+import { codeNotFoundMetadata, generateCodeMetadata } from '@/lib/seo';
 import CodeFile from '@/models/CodeFile';
 import { AppRoutes, FileVisibility } from '@/types/enums';
+import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';
 
-export default async function CodePage({ params }: { params: Promise<{ id: string }> }) {
+type Props = {
+	params: Promise<{ id: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+	const { id } = await params;
+
+	try {
+		await connectDB();
+		const file = await CodeFile.findById(id).populate('createdBy', 'name').lean();
+
+		if (!file) {
+			return codeNotFoundMetadata;
+		}
+
+		return generateCodeMetadata({
+			id: file._id.toString(),
+			title: file.title,
+			language: file.language,
+			visibility: file.visibility,
+			createdBy: file.createdBy as { name?: string },
+		});
+	} catch {
+		return codeNotFoundMetadata;
+	}
+}
+
+export default async function CodePage({ params }: Props) {
 	const { id } = await params;
 
 	try {

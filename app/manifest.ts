@@ -1,10 +1,11 @@
+import { siteConfig } from '@/lib/seo';
 import type { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
 	return {
-		name: 'Share',
-		short_name: 'Share',
-		description: 'Share code securely',
+		name: siteConfig.name,
+		short_name: siteConfig.shortName,
+		description: siteConfig.description,
 		start_url: '/',
 		display: 'standalone',
 		background_color: '#0a0a0a',

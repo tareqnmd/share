@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import { Providers } from '@/components/Providers';
+import { baseMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Poppins } from 'next/font/google';
 import './globals.css';
@@ -17,26 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 	display: 'swap',
 });
 
-export const metadata: Metadata = {
-	title: 'Share',
-	description: 'Share code securely',
-	manifest: '/manifest.webmanifest',
-	icons: {
-		icon: [
-			{
-				url: '/assets/meta/favicon-16x16.png',
-				sizes: '16x16',
-				type: 'image/png',
-			},
-			{
-				url: '/assets/meta/favicon-32x32.png',
-				sizes: '32x32',
-				type: 'image/png',
-			},
-		],
-		apple: '/assets/meta/apple-touch-icon.png',
-	},
-};
+export const metadata: Metadata = baseMetadata;
 
 export default function RootLayout({
 	children,

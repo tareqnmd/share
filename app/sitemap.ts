@@ -1,17 +1,16 @@
+import { siteConfig } from '@/lib/seo';
 import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-	const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://example.com';
-
 	return [
 		{
-			url: baseUrl,
+			url: siteConfig.url,
 			lastModified: new Date(),
 			changeFrequency: 'daily',
 			priority: 1,
 		},
 		{
-			url: `${baseUrl}/dashboard`,
+			url: `${siteConfig.url}/dashboard`,
 			lastModified: new Date(),
 			changeFrequency: 'daily',
 			priority: 0.8,

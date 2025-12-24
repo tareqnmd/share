@@ -1,12 +1,16 @@
-import { getServerSession } from 'next-auth';
+import CreateFileButton from '@/components/dashboard/CreateFileButton';
+import FileCard from '@/components/dashboard/FileCard';
 import { authOptions } from '@/lib/auth';
 import { MAX_FILES_PER_USER } from '@/lib/constants';
 import connectDB from '@/lib/db';
+import { dashboardMetadata } from '@/lib/seo';
 import CodeFile from '@/models/CodeFile';
+import { AppRoutes, UserRole } from '@/types/enums';
+import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import CreateFileButton from '@/components/dashboard/CreateFileButton';
-import FileCard from '@/components/dashboard/FileCard';
-import { UserRole, AppRoutes } from '@/types/enums';
+
+export const metadata: Metadata = dashboardMetadata;
 
 async function getFiles(userId: string) {
 	await connectDB();
