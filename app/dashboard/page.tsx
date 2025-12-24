@@ -89,15 +89,15 @@ export default async function Dashboard() {
 								<div
 									className={`h-full rounded-full transition-all duration-500 ease-out ${
 										isHigh
-											? 'bg-gradient-to-r from-danger-600 to-danger-400'
+											? 'bg-linear-to-r from-danger-600 to-danger-400'
 											: isMedium
-												? 'bg-gradient-to-r from-warning-600 to-warning-400'
-												: 'bg-gradient-to-r from-success-600 to-success-400'
+												? 'bg-linear-to-r from-warning-600 to-warning-400'
+												: 'bg-linear-to-r from-success-600 to-success-400'
 									}`}
 									style={{ width: `${percentage}%` }}
 								/>
 								<div
-									className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"
+									className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"
 									style={{ width: `${percentage}%` }}
 								/>
 							</div>
