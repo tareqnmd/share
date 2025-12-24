@@ -1,7 +1,7 @@
 import Avatar from '@/components/ui/Avatar';
 import Logo from '@/components/ui/Logo';
 import { authOptions } from '@/lib/auth';
-import { AppRoutes, UserRole } from '@/types/enums';
+import { AppRoutes, AvatarSize, UserRole } from '@/types/enums';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import SignIn from './shared/SignIn';
@@ -39,11 +39,11 @@ export default async function Navbar() {
 										)}
 									</div>
 
-									<Avatar
-										src={session.user?.image}
-										alt={session.user?.name || 'User'}
-										size="md"
-									/>
+								<Avatar
+									src={session.user?.image}
+									alt={session.user?.name || 'User'}
+									size={AvatarSize.MD}
+								/>
 								</div>
 
 								<SignOut />

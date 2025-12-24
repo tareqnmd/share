@@ -3,7 +3,7 @@
 import { createCodeFile } from "@/app/actions";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { AppRoutes, FileVisibility, FileEditMode } from "@/types/enums";
+import { AppRoutes, ButtonSize, ButtonVariant, FileVisibility, FileEditMode } from "@/types/enums";
 import { LANGUAGE_OPTIONS } from "@/lib/constants";
 import Button from "@/components/ui/Button";
 import { PlusIcon } from "@/components/icons";
@@ -31,8 +31,8 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
 
     return (
         <Button 
-            variant="primary"
-            size="md"
+            variant={ButtonVariant.PRIMARY}
+            size={ButtonSize.MD}
             onClick={handleCreate} 
             disabled={disabled}
             isLoading={isPending}

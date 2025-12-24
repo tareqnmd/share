@@ -1,13 +1,14 @@
 'use client';
 
 import { CheckIcon, DotsVerticalIcon } from '@/components/icons';
+import { DropdownItemVariant } from '@/types/enums';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
 export interface DropdownMenuItem {
 	label: string;
 	onClick: () => void;
 	icon?: ReactNode;
-	variant?: 'default' | 'danger';
+	variant?: DropdownItemVariant;
 	disabled?: boolean;
 	active?: boolean;
 }
@@ -82,18 +83,18 @@ export default function DropdownMenu({ sections, trigger }: DropdownMenuProps) {
 										}
 									}}
 									disabled={item.disabled}
-									className={`
-										w-full px-3 py-2 text-left text-sm flex items-center gap-3
-										transition-colors
-										disabled:opacity-50 disabled:cursor-not-allowed
-										${
-											item.variant === 'danger'
-												? 'text-danger-400 hover:bg-danger-500/10 hover:text-danger-300'
-												: item.active
-												? 'text-primary-400 bg-primary-500/10'
-												: 'text-neutral-300 hover:bg-neutral-800 hover:text-neutral-50'
-										}
-									`}
+								className={`
+									w-full px-3 py-2 text-left text-sm flex items-center gap-3
+									transition-colors
+									disabled:opacity-50 disabled:cursor-not-allowed
+									${
+										item.variant === DropdownItemVariant.DANGER
+											? 'text-danger-400 hover:bg-danger-500/10 hover:text-danger-300'
+											: item.active
+											? 'text-primary-400 bg-primary-500/10'
+											: 'text-neutral-300 hover:bg-neutral-800 hover:text-neutral-50'
+									}
+								`}
 								>
 									{item.icon && (
 										<span className="w-4 h-4 shrink-0">{item.icon}</span>

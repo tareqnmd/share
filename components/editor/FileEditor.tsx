@@ -16,7 +16,13 @@ import CopyButton from '@/components/ui/CopyButton';
 import DropdownMenu from '@/components/ui/DropdownMenu';
 import Select from '@/components/ui/Select';
 import { LANGUAGE_OPTIONS } from '@/lib/constants';
-import { AppRoutes, FileEditMode, FileVisibility } from '@/types/enums';
+import {
+	AppRoutes,
+	DropdownItemVariant,
+	FileEditMode,
+	FileVisibility,
+	SaveStatus,
+} from '@/types/enums';
 import { CodeFileInput, MAX_CONTENT_LENGTH } from '@/utils/validations';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
@@ -47,7 +53,7 @@ interface FileEditorProps {
 }
 
 interface SaveStatusIndicatorProps {
-	status: 'saved' | 'saving' | 'unsaved';
+	status: SaveStatus;
 	isSaving: boolean;
 	canEdit: boolean;
 	error?: string | null;
@@ -74,19 +80,19 @@ function SaveStatusIndicator({
 					</span>
 				</>
 			)}
-			{!error && (status === 'saving' || isSaving) && (
+			{!error && (status === SaveStatus.SAVING || isSaving) && (
 				<>
 					<div className="w-2 h-2 rounded-full bg-warning-500 animate-pulse" />
 					<span className="text-warning-400">Saving...</span>
 				</>
 			)}
-			{!error && status === 'saved' && !isSaving && (
+			{!error && status === SaveStatus.SAVED && !isSaving && (
 				<>
 					<div className="w-2 h-2 rounded-full bg-success-500" />
 					<span className="text-success-400">Saved</span>
 				</>
 			)}
-			{!error && status === 'unsaved' && !isSaving && (
+			{!error && status === SaveStatus.UNSAVED && !isSaving && (
 				<>
 					<div className="w-2 h-2 rounded-full bg-neutral-500" />
 					<span className="text-neutral-400">Unsaved</span>
@@ -108,9 +114,7 @@ export default function FileEditor({
 	const [editMode, setEditMode] = useState(file.editMode);
 	const [isSaving, startTransition] = useTransition();
 	const [isDeleting, startDeleteTransition] = useTransition();
-	const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>(
-		'saved'
-	);
+	const [saveStatus, setSaveStatus] = useState<SaveStatus>(SaveStatus.SAVED);
 	const [saveError, setSaveError] = useState<string | null>(null);
 	const router = useRouter();
 
@@ -131,7 +135,7 @@ export default function FileEditor({
 		setLanguage(file.language);
 		setVisibility(file.visibility);
 		setEditMode(file.editMode);
-		setSaveStatus('saved');
+		setSaveStatus(SaveStatus.SAVED);
 		setSaveError(null);
 	}
 
@@ -154,7 +158,7 @@ export default function FileEditor({
 				setSaveError(
 					`Content exceeds maximum length of ${MAX_CONTENT_LENGTH} characters`
 				);
-				setSaveStatus('unsaved');
+				setSaveStatus(SaveStatus.UNSAVED);
 				return false;
 			}
 
@@ -167,7 +171,7 @@ export default function FileEditor({
 				return false;
 			}
 
-			setSaveStatus('saving');
+			setSaveStatus(SaveStatus.SAVING);
 			setSaveError(null);
 
 			try {
@@ -176,7 +180,7 @@ export default function FileEditor({
 					lastSavedContentRef.current = newContent;
 					lastSaveTimeRef.current = Date.now();
 					pendingContentRef.current = null;
-					setSaveStatus('saved');
+					setSaveStatus(SaveStatus.SAVED);
 				}
 				return true;
 			} catch (error) {
@@ -184,7 +188,7 @@ export default function FileEditor({
 					const errorMessage =
 						error instanceof Error ? error.message : 'Failed to save';
 					setSaveError(errorMessage);
-					setSaveStatus('unsaved');
+					setSaveStatus(SaveStatus.UNSAVED);
 				}
 				return false;
 			}
@@ -198,7 +202,7 @@ export default function FileEditor({
 
 			if (!canEdit || newContent === lastSavedContentRef.current) {
 				if (newContent === lastSavedContentRef.current) {
-					setSaveStatus('saved');
+					setSaveStatus(SaveStatus.SAVED);
 					setSaveError(null);
 				}
 				return;
@@ -208,11 +212,11 @@ export default function FileEditor({
 				setSaveError(
 					`Content exceeds maximum length (${newContent.length}/${MAX_CONTENT_LENGTH})`
 				);
-				setSaveStatus('unsaved');
+				setSaveStatus(SaveStatus.UNSAVED);
 				return;
 			}
 
-			setSaveStatus('unsaved');
+			setSaveStatus(SaveStatus.UNSAVED);
 			setSaveError(null);
 			pendingContentRef.current = newContent;
 
@@ -361,7 +365,7 @@ export default function FileEditor({
 							{
 								label: isDeleting ? 'Deleting...' : 'Delete File',
 								onClick: handleDelete,
-								variant: 'danger' as const,
+								variant: DropdownItemVariant.DANGER,
 								disabled: isDeleting,
 								icon: <TrashIcon />,
 							},

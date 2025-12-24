@@ -1,14 +1,14 @@
-import { FileVisibility, FileEditMode } from "@/types/enums";
+import { FileVisibility, FileEditMode, Language } from "@/types/enums";
 
 export const LANGUAGE_OPTIONS = [
-  { value: "javascript", label: "JavaScript" },
-  { value: "typescript", label: "TypeScript" },
-  { value: "python", label: "Python" },
-  { value: "html", label: "HTML" },
-  { value: "css", label: "CSS" },
-  { value: "json", label: "JSON" },
-  { value: "markdown", label: "Markdown" },
-  { value: "plaintext", label: "Plain Text" },
+  { value: Language.JAVASCRIPT, label: "JavaScript" },
+  { value: Language.TYPESCRIPT, label: "TypeScript" },
+  { value: Language.PYTHON, label: "Python" },
+  { value: Language.HTML, label: "HTML" },
+  { value: Language.CSS, label: "CSS" },
+  { value: Language.JSON, label: "JSON" },
+  { value: Language.MARKDOWN, label: "Markdown" },
+  { value: Language.PLAINTEXT, label: "Plain Text" },
 ] as const;
 
 export const VISIBILITY_OPTIONS = [

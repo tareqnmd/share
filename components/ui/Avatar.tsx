@@ -2,32 +2,33 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { AvatarSize } from '@/types/enums';
 
 const DEFAULT_AVATAR = '/assets/images/user.webp';
 
 interface AvatarProps {
 	src?: string | null;
 	alt: string;
-	size?: 'sm' | 'md' | 'lg';
+	size?: AvatarSize;
 	className?: string;
 }
 
-const sizeMap = {
-	sm: 24,
-	md: 32,
-	lg: 48,
+const sizeMap: Record<AvatarSize, number> = {
+	[AvatarSize.SM]: 24,
+	[AvatarSize.MD]: 32,
+	[AvatarSize.LG]: 48,
 };
 
-const sizeClasses = {
-	sm: 'w-6 h-6',
-	md: 'w-8 h-8',
-	lg: 'w-12 h-12',
+const sizeClasses: Record<AvatarSize, string> = {
+	[AvatarSize.SM]: 'w-6 h-6',
+	[AvatarSize.MD]: 'w-8 h-8',
+	[AvatarSize.LG]: 'w-12 h-12',
 };
 
 export default function Avatar({
 	src,
 	alt,
-	size = 'md',
+	size = AvatarSize.MD,
 	className = '',
 }: AvatarProps) {
 	const [imgSrc, setImgSrc] = useState(src || DEFAULT_AVATAR);
@@ -53,7 +54,7 @@ export default function Avatar({
 				height={dimension}
 				className="object-cover w-full h-full"
 				onError={handleError}
-				priority={size === 'lg'}
+				priority={size === AvatarSize.LG}
 				unoptimized={imgSrc === DEFAULT_AVATAR}
 			/>
 		</div>
