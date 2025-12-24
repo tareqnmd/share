@@ -92,7 +92,7 @@ export default function FileEditor({
 
 	return (
 		<div className="space-y-4">
-			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-neutral-800 pb-4">
 				<div className="flex-1 w-full">
 					{canEdit ? (
 						<input
@@ -101,13 +101,13 @@ export default function FileEditor({
 								setTitle(e.target.value);
 							}}
 							onBlur={() => handleSettingsUpdate({ title })}
-							className="text-2xl font-bold bg-transparent border-none focus:ring-0 w-full p-0"
+							className="text-2xl font-bold bg-transparent border-none focus:ring-0 w-full p-0 text-neutral-50"
 							placeholder="File Title"
 						/>
 					) : (
-						<h1 className="text-2xl font-bold">{title}</h1>
+						<h1 className="text-2xl font-bold text-neutral-50">{title}</h1>
 					)}
-					<div className="text-sm text-gray-500">
+					<div className="text-sm text-neutral-400">
 						Created by {file.createdBy.name} •{' '}
 						{new Date(file.createdAt).toLocaleDateString()}
 					</div>
@@ -121,7 +121,7 @@ export default function FileEditor({
 								onChange={(e) =>
 									handleSettingsUpdate({ language: e.target.value })
 								}
-								className="border rounded p-1 text-sm"
+								className="border border-neutral-700 rounded-md px-2 py-1 text-sm bg-neutral-900 text-neutral-50 focus:border-primary-500 focus:outline-none"
 							>
 								{LANGUAGE_OPTIONS.map((option) => (
 									<option
@@ -140,7 +140,7 @@ export default function FileEditor({
 										visibility: e.target.value as FileVisibility,
 									})
 								}
-								className="border rounded p-1 text-sm"
+								className="border border-neutral-700 rounded-md px-2 py-1 text-sm bg-neutral-900 text-neutral-50 focus:border-primary-500 focus:outline-none"
 							>
 								{VISIBILITY_OPTIONS.map((option) => (
 									<option
@@ -159,7 +159,7 @@ export default function FileEditor({
 										editMode: e.target.value as FileEditMode,
 									})
 								}
-								className="border rounded p-1 text-sm"
+								className="border border-neutral-700 rounded-md px-2 py-1 text-sm bg-neutral-900 text-neutral-50 focus:border-primary-500 focus:outline-none"
 							>
 								{EDIT_MODE_OPTIONS.map((option) => (
 									<option
@@ -174,7 +174,7 @@ export default function FileEditor({
 							<button
 								onClick={handleSave}
 								disabled={!unsavedChanges || isSaving}
-								className="bg-green-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+								className="bg-success-600 text-white px-4 py-1 rounded-md text-sm font-medium disabled:opacity-50 hover:bg-success-700 transition-colors"
 							>
 								{isSaving ? 'Saving...' : 'Save'}
 							</button>
@@ -183,7 +183,7 @@ export default function FileEditor({
 								<button
 									onClick={handleDelete}
 									disabled={isDeleting}
-									className="bg-red-600 text-white px-3 py-1 rounded text-sm disabled:opacity-50"
+									className="bg-danger-600 text-white px-4 py-1 rounded-md text-sm font-medium disabled:opacity-50 hover:bg-danger-700 transition-colors"
 								>
 									Delete
 								</button>
@@ -191,7 +191,7 @@ export default function FileEditor({
 						</>
 					)}
 					{!canEdit && (
-						<div className="text-sm text-gray-500 italic">Read Only</div>
+						<div className="text-sm text-neutral-500 italic">Read Only</div>
 					)}
 				</div>
 			</div>

@@ -9,13 +9,13 @@ export default function GlobalError({
 }) {
   return (
     <html>
-      <body>
-        <div className="flex flex-col items-center justify-center min-h-screen space-y-4 text-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
-          <h2 className="text-4xl font-bold text-red-600">Critical System Error</h2>
-          <p className="max-w-md">{error.message || "A critical error occurred."}</p>
+      <body className="bg-neutral-950 text-neutral-50">
+        <div className="flex flex-col items-center justify-center min-h-screen space-y-4 text-center px-6">
+          <h2 className="text-4xl font-bold text-danger-400">Critical System Error</h2>
+          <p className="max-w-md text-neutral-400">{error.message || "A critical error occurred."}</p>
           <button
             onClick={() => reset()}
-            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="px-6 py-3 bg-primary-600 text-white rounded-md font-medium hover:bg-primary-700 transition-colors"
           >
             Refresh Application
           </button>
@@ -24,4 +24,3 @@ export default function GlobalError({
     </html>
   );
 }
-
