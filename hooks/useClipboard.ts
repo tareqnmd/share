@@ -14,7 +14,6 @@ export function useClipboard() {
 			setTimeout(() => setCopied(false), COPY_TIMEOUT_MS);
 			return true;
 		} catch {
-			// Fallback for older browsers
 			const textarea = document.createElement('textarea');
 			textarea.value = text;
 			textarea.style.position = 'fixed';

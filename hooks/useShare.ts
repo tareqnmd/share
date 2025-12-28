@@ -22,7 +22,6 @@ export function useShare() {
 			}
 		}
 
-		// Fallback to clipboard copy
 		try {
 			await navigator.clipboard.writeText(url);
 			setShared(true);

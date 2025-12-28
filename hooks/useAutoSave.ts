@@ -149,7 +149,6 @@ export function useAutoSave({
 		pendingRef.current = { content: newContent, title: newTitle };
 	}, []);
 
-	// Cleanup on unmount and save pending changes
 	useEffect(() => {
 		isMountedRef.current = true;
 
@@ -171,14 +170,11 @@ export function useAutoSave({
 						title: pendingTitle,
 					});
 					navigator.sendBeacon('/api/save-on-unload', data);
-				} catch {
-					// Silently fail
-				}
+				} catch {}
 			}
 		};
 	}, [fileId, canEdit]);
 
-	// Warn before leaving with unsaved changes
 	useEffect(() => {
 		const handleBeforeUnload = (e: BeforeUnloadEvent) => {
 			const { content: pendingContent, title: pendingTitle } = pendingRef.current;

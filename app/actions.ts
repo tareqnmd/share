@@ -1,4 +1,3 @@
-// Re-export all actions from the actions folder
 export {
 	createCodeFile,
 	deleteCodeFile,
