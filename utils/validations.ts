@@ -1,5 +1,6 @@
+import { FileEditMode } from '@/enums/file-edit-mode.enum';
+import { FileVisibility } from '@/enums/file-visibility.enum';
 import { MAX_CONTENT_LENGTH, MAX_TITLE_LENGTH, MIN_TITLE_LENGTH } from '@/lib/constants';
-import { FileEditMode, FileVisibility } from '@/types/enums';
 import { z } from 'zod';
 
 const objectIdRegex = /^[a-f\d]{24}$/i;

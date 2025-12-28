@@ -1,6 +1,7 @@
+import { FileEditMode } from '@/enums/file-edit-mode.enum';
+import { UserRole } from '@/enums/user-role.enum';
 import CodeFile from '@/models/CodeFile';
 import User from '@/models/User';
-import { FileEditMode, UserRole } from '@/types/enums';
 import { MAX_FILES_PER_USER } from './constants';
 import connectDB from './db';
 

@@ -1,4 +1,6 @@
-import { FileEditMode, FileVisibility, Language } from '@/types/enums';
+import { FileEditMode } from '@/enums/file-edit-mode.enum';
+import { FileVisibility } from '@/enums/file-visibility.enum';
+import { Language } from '@/enums/language.enum';
 
 export const MAX_CONTENT_LENGTH = 500000;
 export const MAX_TITLE_LENGTH = 100;

@@ -1,14 +1,9 @@
 'use client';
 
 import { CheckIcon, DotsVerticalIcon } from '@/components/icons';
-import { DropdownItemVariant } from '@/types/enums';
-import { DropdownMenuSection } from '@/types/types';
-import { ReactNode, useEffect, useRef, useState } from 'react';
-
-interface DropdownMenuProps {
-	sections: DropdownMenuSection[];
-	trigger?: ReactNode;
-}
+import { DropdownItemVariant } from '@/enums/dropdown-item-variant.enum';
+import { DropdownMenuProps } from '@/interfaces/dropdown-menu.types';
+import { useEffect, useRef, useState } from 'react';
 
 export default function DropdownMenu({ sections, trigger }: DropdownMenuProps) {
 	const [isOpen, setIsOpen] = useState(false);

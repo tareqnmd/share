@@ -1,13 +1,7 @@
-import { AppRoutes, FileVisibility } from '@/types/enums';
+import { AppRoutes } from '@/enums/app-routes.enum';
+import { FileVisibility } from '@/enums/file-visibility.enum';
+import { FileCardProps } from '@/interfaces/file-card.types';
 import Link from 'next/link';
-
-interface FileCardProps {
-	id: string;
-	title: string;
-	language: string;
-	visibility: string;
-	updatedAt: string;
-}
 
 export default function FileCard({ id, title, language, visibility, updatedAt }: FileCardProps) {
 	const isPublic = visibility === FileVisibility.PUBLIC;

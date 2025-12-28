@@ -1,5 +1,6 @@
 'use server';
 
+import { HttpStatus } from '@/enums/http-status.enum';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db';
 import { canEditFile } from '@/lib/permissions';
@@ -12,7 +13,7 @@ export async function POST(request: NextRequest) {
 	try {
 		const session = await getServerSession(authOptions);
 		if (!session?.user?.id) {
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+			return NextResponse.json({ error: 'Unauthorized' }, { status: HttpStatus.UNAUTHORIZED });
 		}
 
 		const body = await request.json();
@@ -20,18 +21,18 @@ export async function POST(request: NextRequest) {
 
 		const idResult = objectIdSchema.safeParse(fileId);
 		if (!idResult.success) {
-			return NextResponse.json({ error: 'Invalid file ID' }, { status: 400 });
+			return NextResponse.json({ error: 'Invalid file ID' }, { status: HttpStatus.BAD_REQUEST });
 		}
 
 		if (typeof content !== 'string') {
-			return NextResponse.json({ error: 'Invalid content' }, { status: 400 });
+			return NextResponse.json({ error: 'Invalid content' }, { status: HttpStatus.BAD_REQUEST });
 		}
 
 		await connectDB();
 
 		const hasPermission = await canEditFile(session.user.id, idResult.data);
 		if (!hasPermission) {
-			return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+			return NextResponse.json({ error: 'Forbidden' }, { status: HttpStatus.FORBIDDEN });
 		}
 
 		if (!content || content.trim() === '') {
@@ -49,12 +50,15 @@ export async function POST(request: NextRequest) {
 		const result = await CodeFile.findByIdAndUpdate(idResult.data, updateData, { new: true });
 
 		if (!result) {
-			return NextResponse.json({ error: 'File not found' }, { status: 404 });
+			return NextResponse.json({ error: 'File not found' }, { status: HttpStatus.NOT_FOUND });
 		}
 
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		console.error('Save on unload failed:', error);
-		return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+		return NextResponse.json(
+			{ error: 'Internal server error' },
+			{ status: HttpStatus.INTERNAL_SERVER_ERROR }
+		);
 	}
 }

@@ -1,3 +1,4 @@
+import { FileVisibility } from '@/enums/file-visibility.enum';
 import type { Metadata } from 'next';
 import { siteConfig } from './config';
 
@@ -28,7 +29,7 @@ export function generateCodeMetadata(file: CodeFileMetaData | null): Metadata {
 	const authorName = file.createdBy?.name || 'Anonymous';
 	const description = `${languageDisplay} code snippet "${title}" shared by ${authorName} on ${siteConfig.name}. View, copy, or collaborate on this code file.`;
 
-	const isPublic = file.visibility === 'public';
+	const isPublic = file.visibility === FileVisibility.PUBLIC;
 
 	return {
 		title: title,

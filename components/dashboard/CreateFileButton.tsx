@@ -1,12 +1,16 @@
 'use client';
 
 import { createCodeFile } from '@/app/actions';
-import { useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { AppRoutes, ButtonSize, ButtonVariant, FileVisibility, FileEditMode } from '@/types/enums';
-import { LANGUAGE_OPTIONS } from '@/lib/constants';
-import Button from '@/components/ui/Button';
 import { PlusIcon } from '@/components/icons';
+import Button from '@/components/ui/Button';
+import { AppRoutes } from '@/enums/app-routes.enum';
+import { ButtonSize } from '@/enums/button-size.enum';
+import { ButtonVariant } from '@/enums/button-variant.enum';
+import { FileEditMode } from '@/enums/file-edit-mode.enum';
+import { FileVisibility } from '@/enums/file-visibility.enum';
+import { LANGUAGE_OPTIONS } from '@/lib/constants';
+import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 
 export default function CreateFileButton({ disabled }: { disabled: boolean }) {
 	const [isPending, startTransition] = useTransition();

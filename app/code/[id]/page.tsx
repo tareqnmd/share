@@ -1,10 +1,11 @@
 import FileEditor from '@/components/editor/FileEditor';
+import { AppRoutes } from '@/enums/app-routes.enum';
+import { FileVisibility } from '@/enums/file-visibility.enum';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db';
 import { canEditFile } from '@/lib/permissions';
 import { codeNotFoundMetadata, generateCodeMetadata } from '@/lib/seo';
 import CodeFile from '@/models/CodeFile';
-import { AppRoutes, FileVisibility } from '@/types/enums';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { notFound, redirect } from 'next/navigation';

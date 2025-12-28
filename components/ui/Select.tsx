@@ -1,8 +1,8 @@
 'use client';
 
-import { forwardRef, SelectHTMLAttributes, useId } from 'react';
 import { ChevronDownIcon } from '@/components/icons';
-import { SelectOption } from '@/types/types';
+import { SelectOption } from '@/interfaces/select.types';
+import { forwardRef, SelectHTMLAttributes, useId } from 'react';
 
 interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
 	options: readonly SelectOption[];

@@ -1,7 +1,8 @@
 'use client';
 
 import { SpinnerIcon } from '@/components/icons';
-import { ButtonSize, ButtonVariant } from '@/types/enums';
+import { ButtonSize } from '@/enums/button-size.enum';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

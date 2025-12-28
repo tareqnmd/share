@@ -1,7 +1,7 @@
 'use client';
 
 import Button from '@/components/ui/Button';
-import { ButtonVariant } from '@/types';
+import { ButtonVariant } from '@/enums/button-variant.enum';
 import { useEffect } from 'react';
 
 export default function Error({

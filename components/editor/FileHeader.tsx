@@ -1,13 +1,9 @@
 'use client';
 
-import { FileVisibility, SaveStatus } from '@/types/enums';
+import { FileVisibility } from '@/enums/file-visibility.enum';
+import { FileHeaderProps, FileMetaInfoProps } from '@/interfaces/file-header.types';
+import { formatDate } from '@/utils/date';
 import SaveStatusIndicator from './SaveStatusIndicator';
-
-interface FileHeaderProps {
-	title: string;
-	canEdit: boolean;
-	onTitleChange: (value: string) => void;
-}
 
 export default function FileHeader({ title, canEdit, onTitleChange }: FileHeaderProps) {
 	return (
@@ -30,16 +26,6 @@ export default function FileHeader({ title, canEdit, onTitleChange }: FileHeader
 	);
 }
 
-interface FileMetaInfoProps {
-	visibility: FileVisibility;
-	createdByName: string;
-	createdAt: string;
-	canEdit: boolean;
-	saveStatus: SaveStatus;
-	isSaving: boolean;
-	saveError: string | null;
-}
-
 export function FileMetaInfo({
 	visibility,
 	createdByName,
@@ -49,11 +35,7 @@ export function FileMetaInfo({
 	isSaving,
 	saveError,
 }: FileMetaInfoProps) {
-	const formattedDate = new Date(createdAt).toLocaleDateString('en-US', {
-		month: 'short',
-		day: 'numeric',
-		year: 'numeric',
-	});
+	const formattedDate = formatDate(createdAt);
 
 	return (
 		<div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">

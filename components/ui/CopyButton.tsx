@@ -1,38 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { CopyIcon, CheckCircleIcon } from '@/components/icons';
-
-interface CopyButtonProps {
-	text: string;
-	className?: string;
-}
+import { CheckCircleIcon, CopyIcon } from '@/components/icons';
+import { useClipboard } from '@/hooks';
+import { CopyButtonProps } from '@/interfaces/copy-button.types';
 
 export default function CopyButton({ text, className = '' }: CopyButtonProps) {
-	const [copied, setCopied] = useState(false);
-
-	const handleCopy = async () => {
-		try {
-			await navigator.clipboard.writeText(text);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 2000);
-		} catch {
-			const textarea = document.createElement('textarea');
-			textarea.value = text;
-			textarea.style.position = 'fixed';
-			textarea.style.opacity = '0';
-			document.body.appendChild(textarea);
-			textarea.select();
-			document.execCommand('copy');
-			document.body.removeChild(textarea);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 2000);
-		}
-	};
+	const { copied, copyToClipboard } = useClipboard();
 
 	return (
 		<button
-			onClick={handleCopy}
+			onClick={() => copyToClipboard(text)}
 			className={`
 				flex items-center gap-1.5
 				px-3 py-1.5

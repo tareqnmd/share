@@ -1,4 +1,4 @@
-import { AppRoutes } from '@/types/enums';
+import { AppRoutes } from '@/enums';
 import Link from 'next/link';
 
 export default function Logo() {

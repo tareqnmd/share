@@ -1,8 +1,9 @@
 'use client';
+
+import { CodeEditorProps } from '@/interfaces/editor.types';
 import Editor, { OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import { useCallback, useRef } from 'react';
-import { CodeEditorProps } from '@/types/types';
 import EditorLoader from './EditorLoader';
 
 export default function CodeEditor({

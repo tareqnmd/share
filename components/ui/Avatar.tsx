@@ -1,10 +1,10 @@
 'use client';
 
+import { AvatarSize } from '@/enums/avatar-size.enum';
+import { AvatarProps } from '@/interfaces/avatar.types';
+import { DEFAULT_AVATAR } from '@/lib/constants';
 import Image from 'next/image';
 import { useState } from 'react';
-import { DEFAULT_AVATAR } from '@/lib/constants';
-import { AvatarSize } from '@/types/enums';
-import { AvatarProps } from '@/types/types';
 
 const sizeMap: Record<AvatarSize, number> = {
 	[AvatarSize.SM]: 24,

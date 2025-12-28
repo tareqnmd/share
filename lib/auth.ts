@@ -1,5 +1,6 @@
+import { AuthProvider } from '@/enums/auth-provider.enum';
+import { UserRole } from '@/enums/user-role.enum';
 import User from '@/models/User';
-import { UserRole } from '@/types/enums';
 import { DefaultSession, NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import connectDB from './db';
@@ -27,7 +28,7 @@ export const authOptions: NextAuthOptions = {
 	],
 	callbacks: {
 		async signIn({ user, account }) {
-			if (account?.provider === 'google') {
+			if (account?.provider === AuthProvider.GOOGLE) {
 				await connectDB();
 				try {
 					const existingUser = await User.findOne({ email: user.email });

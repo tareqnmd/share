@@ -10,21 +10,12 @@ import {
 } from '@/components/icons';
 import DropdownMenu from '@/components/ui/DropdownMenu';
 import Select from '@/components/ui/Select';
+import { DropdownItemVariant } from '@/enums/dropdown-item-variant.enum';
+import { FileEditMode } from '@/enums/file-edit-mode.enum';
+import { FileVisibility } from '@/enums/file-visibility.enum';
+import { DropdownMenuSection } from '@/interfaces/dropdown.types';
+import { FileControlsProps } from '@/interfaces/file-controls.types';
 import { LANGUAGE_OPTIONS } from '@/lib/constants';
-import { DropdownItemVariant, FileEditMode, FileVisibility } from '@/types/enums';
-import { DropdownMenuSection } from '@/types/types';
-import { CodeFileInput } from '@/utils/validations';
-
-interface FileControlsProps {
-	language: string;
-	visibility: FileVisibility;
-	editMode: FileEditMode;
-	canEdit: boolean;
-	isOwner: boolean;
-	isDeleting: boolean;
-	onSettingsUpdate: (updates: Partial<CodeFileInput>) => void;
-	onDelete: () => void;
-}
 
 export default function FileControls({
 	language,

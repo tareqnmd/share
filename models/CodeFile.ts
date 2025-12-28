@@ -1,6 +1,7 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import { FileEditMode } from '@/enums/file-edit-mode.enum';
+import { FileVisibility } from '@/enums/file-visibility.enum';
+import mongoose, { Document, Model, Schema } from 'mongoose';
 import { IUser } from './User';
-import { FileVisibility, FileEditMode } from '@/types/enums';
 
 export interface ICodeFile extends Document {
 	title: string;

@@ -1,8 +1,8 @@
 import { PlusIcon } from '@/components/icons';
 import SignIn from '@/components/shared/SignIn';
+import { AppRoutes } from '@/enums/app-routes.enum';
 import { authOptions } from '@/lib/auth';
 import { homeMetadata } from '@/lib/seo';
-import { AppRoutes } from '@/types/enums';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';

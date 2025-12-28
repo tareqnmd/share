@@ -1,5 +1,5 @@
-import { SaveStatus } from '@/types/enums';
-import { SaveStatusIndicatorProps } from '@/types/types';
+import { SaveStatus } from '@/enums/save-status.enum';
+import { SaveStatusIndicatorProps } from '@/interfaces/editor.types';
 
 export default function SaveStatusIndicator({
 	status,

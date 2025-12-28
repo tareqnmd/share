@@ -1,7 +1,9 @@
 import Avatar from '@/components/ui/Avatar';
 import Logo from '@/components/ui/Logo';
+import { AppRoutes } from '@/enums/app-routes.enum';
+import { AvatarSize } from '@/enums/avatar-size.enum';
+import { UserRole } from '@/enums/user-role.enum';
 import { authOptions } from '@/lib/auth';
-import { AppRoutes, AvatarSize, UserRole } from '@/types/enums';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 import SignIn from './shared/SignIn';

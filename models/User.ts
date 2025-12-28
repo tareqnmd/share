@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
-import { UserRole } from '@/types/enums';
+import { UserRole } from '@/enums/user-role.enum';
+import mongoose, { Document, Model, Schema } from 'mongoose';
 
 export interface IUser extends Document {
 	name: string;

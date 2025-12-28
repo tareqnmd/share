@@ -1,8 +1,5 @@
+import { StorageQuotaProps } from '@/interfaces/storage-quota.types';
 import { MAX_FILES_PER_USER } from '@/lib/constants';
-
-interface StorageQuotaProps {
-	fileCount: number;
-}
 
 export default function StorageQuota({ fileCount }: StorageQuotaProps) {
 	const percentage = Math.min((fileCount / MAX_FILES_PER_USER) * 100, 100);
