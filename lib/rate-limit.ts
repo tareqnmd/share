@@ -1,11 +1,6 @@
-/**
- * In-memory rate limiting for serverless environments
- * For production at scale, consider using Redis (Upstash) for distributed rate limiting
- */
-
 interface RateLimitConfig {
-	window: number; // Time window in seconds
-	maxRequests: number; // Max requests per window
+	window: number;
+	maxRequests: number;
 }
 
 interface RateLimitEntry {
@@ -13,28 +8,18 @@ interface RateLimitEntry {
 	resetTime: number;
 }
 
-// Rate limit configurations for different actions
 export const RATE_LIMITS: Record<string, RateLimitConfig> = {
-	// File operations
-	'create-file': { window: 60, maxRequests: 10 }, // 10/min
-	'update-file': { window: 1, maxRequests: 5 }, // 5/sec (auto-save)
-	'delete-file': { window: 60, maxRequests: 20 }, // 20/min
-	'save-on-unload': { window: 1, maxRequests: 2 }, // 2/sec
-
-	// Auth endpoints
-	'sign-in': { window: 300, maxRequests: 5 }, // 5/5min
-	'sign-out': { window: 60, maxRequests: 10 }, // 10/min
-
-	// General API
-	'api-global': { window: 60, maxRequests: 100 }, // 100/min per user
+	'create-file': { window: 60, maxRequests: 10 },
+	'update-file': { window: 1, maxRequests: 5 },
+	'delete-file': { window: 60, maxRequests: 20 },
+	'save-on-unload': { window: 1, maxRequests: 2 },
+	'sign-in': { window: 300, maxRequests: 5 },
+	'sign-out': { window: 60, maxRequests: 10 },
+	'api-global': { window: 60, maxRequests: 100 },
 };
 
-// In-memory store (resets on serverless cold start)
-// For production, use Redis/Upstash
 const rateLimitStore = new Map<string, RateLimitEntry>();
-
-// Cleanup old entries periodically
-const CLEANUP_INTERVAL = 60000; // 1 minute
+const CLEANUP_INTERVAL = 60000;
 let lastCleanup = Date.now();
 
 function cleanup() {
@@ -52,16 +37,10 @@ function cleanup() {
 export interface RateLimitResult {
 	success: boolean;
 	remaining: number;
-	resetIn: number; // seconds until reset
+	resetIn: number;
 	limit: number;
 }
 
-/**
- * Check if a request should be rate limited
- * @param identifier - Unique identifier (userId, IP, etc.)
- * @param action - Action type from RATE_LIMITS
- * @returns RateLimitResult with success status and metadata
- */
 export function checkRateLimit(identifier: string, action: string): RateLimitResult {
 	cleanup();
 
@@ -71,7 +50,6 @@ export function checkRateLimit(identifier: string, action: string): RateLimitRes
 
 	const entry = rateLimitStore.get(key);
 
-	// No existing entry or window expired
 	if (!entry || now > entry.resetTime) {
 		const resetTime = now + config.window * 1000;
 		rateLimitStore.set(key, { count: 1, resetTime });
@@ -83,7 +61,6 @@ export function checkRateLimit(identifier: string, action: string): RateLimitRes
 		};
 	}
 
-	// Within window
 	if (entry.count >= config.maxRequests) {
 		const resetIn = Math.ceil((entry.resetTime - now) / 1000);
 		return {
@@ -94,7 +71,6 @@ export function checkRateLimit(identifier: string, action: string): RateLimitRes
 		};
 	}
 
-	// Increment counter
 	entry.count++;
 	return {
 		success: true,
@@ -104,9 +80,6 @@ export function checkRateLimit(identifier: string, action: string): RateLimitRes
 	};
 }
 
-/**
- * Generate rate limit headers for HTTP responses
- */
 export function getRateLimitHeaders(result: RateLimitResult): Record<string, string> {
 	return {
 		'X-RateLimit-Limit': result.limit.toString(),
@@ -115,18 +88,11 @@ export function getRateLimitHeaders(result: RateLimitResult): Record<string, str
 	};
 }
 
-/**
- * Reset rate limit for a specific identifier and action
- * Useful for testing or admin overrides
- */
 export function resetRateLimit(identifier: string, action: string): void {
 	const key = `${action}:${identifier}`;
 	rateLimitStore.delete(key);
 }
 
-/**
- * Get current rate limit status without incrementing
- */
 export function getRateLimitStatus(identifier: string, action: string): RateLimitResult {
 	const config = RATE_LIMITS[action] || RATE_LIMITS['api-global'];
 	const key = `${action}:${identifier}`;

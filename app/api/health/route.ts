@@ -47,7 +47,6 @@ function checkMemory(): HealthCheck {
 		const heapTotalMB = Math.round(memUsage.heapTotal / 1024 / 1024);
 		const usagePercent = Math.round((memUsage.heapUsed / memUsage.heapTotal) * 100);
 
-		// Warn if memory usage is above 90%
 		if (usagePercent > 90) {
 			return {
 				status: 'error',

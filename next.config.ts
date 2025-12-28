@@ -1,6 +1,5 @@
 import type { NextConfig } from 'next';
 
-// Security headers configuration
 const securityHeaders = [
 	{
 		key: 'X-DNS-Prefetch-Control',
@@ -50,7 +49,6 @@ const nextConfig: NextConfig = {
 	headers: async () => {
 		return [
 			{
-				// Apply security headers to all routes
 				source: '/:path*',
 				headers: securityHeaders,
 			},
