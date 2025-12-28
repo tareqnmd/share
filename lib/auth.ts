@@ -4,6 +4,7 @@ import User from '@/models/User';
 import { DefaultSession, NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import connectDB from './db';
+import { logger } from './logger';
 
 declare module 'next-auth' {
 	interface Session {
@@ -40,10 +41,14 @@ export const authOptions: NextAuthOptions = {
 							providerId: account.providerAccountId,
 							role: UserRole.USER,
 						});
+						logger.auth('login', undefined, { isNewUser: true, provider: 'google' });
+					} else {
+						logger.auth('login', existingUser._id.toString(), { provider: 'google' });
 					}
 					return true;
 				} catch (error) {
-					console.error('Error saving user', error);
+					logger.error('Error saving user during sign in', error);
+					logger.auth('login_failed', undefined, { error: 'Database error' });
 					return false;
 				}
 			}
@@ -59,6 +64,13 @@ export const authOptions: NextAuthOptions = {
 				}
 			}
 			return session;
+		},
+	},
+	events: {
+		async signOut({ token }) {
+			if (token?.sub) {
+				logger.auth('logout', token.sub as string);
+			}
 		},
 	},
 	session: {

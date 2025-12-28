@@ -3,6 +3,7 @@
 import { AppRoutes } from '@/enums/app-routes.enum';
 import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/db';
+import { logger } from '@/lib/logger';
 import { canCreateFile, canEditFile } from '@/lib/permissions';
 import CodeFile from '@/models/CodeFile';
 import { CodeFileInput, codeFileSchema, objectIdSchema } from '@/utils/validations';
@@ -24,9 +25,12 @@ function validateFileId(id: string): string {
 }
 
 export async function createCodeFile(data: CodeFileInput) {
+	const start = performance.now();
+
 	try {
 		const session = await getServerSession(authOptions);
 		if (!session || !session.user) {
+			logger.security('unauthorized_create_attempt');
 			throw new Error('Unauthorized');
 		}
 
@@ -34,6 +38,7 @@ export async function createCodeFile(data: CodeFileInput) {
 		const canCreate = await canCreateFile(session.user.id);
 
 		if (!canCreate) {
+			logger.warn('File limit reached', { userId: session.user.id, action: 'create-file' });
 			throw new Error('File limit reached. You can only create up to 5 files.');
 		}
 
@@ -42,6 +47,13 @@ export async function createCodeFile(data: CodeFileInput) {
 		const newFile = await CodeFile.create({
 			...validated,
 			createdBy: session.user.id,
+		});
+
+		const duration_ms = Math.round(performance.now() - start);
+		logger.action('file.create', 'success', {
+			userId: session.user.id,
+			fileId: newFile._id.toString(),
+			duration_ms,
 		});
 
 		revalidatePath(AppRoutes.DASHBOARD);
@@ -62,17 +74,21 @@ interface UpdateCodeFileData {
 }
 
 export async function updateCodeFile(id: string, data: UpdateCodeFileData) {
+	const start = performance.now();
+
 	try {
 		const validatedId = validateFileId(id);
 
 		const session = await getServerSession(authOptions);
 		if (!session || !session.user) {
+			logger.security('unauthorized_update_attempt', { fileId: id });
 			throw new Error('Unauthorized');
 		}
 
 		await connectDB();
 		const canEdit = await canEditFile(session.user.id, validatedId);
 		if (!canEdit) {
+			logger.security('forbidden_update_attempt', { userId: session.user.id, fileId: id });
 			throw new Error('Forbidden');
 		}
 
@@ -87,13 +103,16 @@ export async function updateCodeFile(id: string, data: UpdateCodeFileData) {
 			throw new Error('File not found');
 		}
 
+		const duration_ms = Math.round(performance.now() - start);
+		logger.debug('File updated', { userId: session.user.id, fileId: id, duration_ms });
+
 		if (data.title !== undefined) {
 			revalidatePath(AppRoutes.DASHBOARD);
 		}
 
 		return { success: true };
 	} catch (error) {
-		console.error('Failed to update file:', error);
+		logger.error('Failed to update file', error, { fileId: id });
 		throw error instanceof Error ? error : new Error('Failed to update file');
 	}
 }
@@ -104,12 +123,14 @@ export async function updateCodeFileSettings(id: string, data: Partial<CodeFileI
 
 		const session = await getServerSession(authOptions);
 		if (!session || !session.user) {
+			logger.security('unauthorized_settings_update', { fileId: id });
 			throw new Error('Unauthorized');
 		}
 
 		await connectDB();
 		const canEdit = await canEditFile(session.user.id, validatedId);
 		if (!canEdit) {
+			logger.security('forbidden_settings_update', { userId: session.user.id, fileId: id });
 			throw new Error('Forbidden');
 		}
 
@@ -122,6 +143,12 @@ export async function updateCodeFileSettings(id: string, data: Partial<CodeFileI
 			throw new Error('File not found');
 		}
 
+		logger.action('file.update_settings', 'success', {
+			userId: session.user.id,
+			fileId: id,
+			metadata: { changes: Object.keys(data) },
+		});
+
 		if (data.visibility || data.editMode) {
 			revalidatePath(`${AppRoutes.CODE}/${validatedId}`);
 		}
@@ -133,7 +160,7 @@ export async function updateCodeFileSettings(id: string, data: Partial<CodeFileI
 			const issues = err.errors || err.issues || [];
 			throw new Error(`Validation failed: ${issues.map((e) => e.message).join(', ')}`);
 		}
-		console.error('Failed to update file settings:', error);
+		logger.error('Failed to update file settings', error, { fileId: id });
 		throw error instanceof Error ? error : new Error('Failed to update file settings');
 	}
 }
@@ -144,6 +171,7 @@ export async function deleteCodeFile(id: string) {
 
 		const session = await getServerSession(authOptions);
 		if (!session || !session.user) {
+			logger.security('unauthorized_delete_attempt', { fileId: id });
 			throw new Error('Unauthorized');
 		}
 
@@ -153,14 +181,18 @@ export async function deleteCodeFile(id: string) {
 		if (!file) throw new Error('File not found');
 
 		if (file.createdBy.toString() !== session.user.id) {
+			logger.security('forbidden_delete_attempt', { userId: session.user.id, fileId: id });
 			throw new Error('Forbidden');
 		}
 
 		await CodeFile.findByIdAndDelete(validatedId);
+
+		logger.action('file.delete', 'success', { userId: session.user.id, fileId: id });
+
 		revalidatePath(AppRoutes.DASHBOARD);
 		return { success: true };
 	} catch (error) {
-		console.error('Failed to delete file:', error);
+		logger.error('Failed to delete file', error, { fileId: id });
 		throw error instanceof Error ? error : new Error('Failed to delete file');
 	}
 }
