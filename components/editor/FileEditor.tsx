@@ -2,6 +2,7 @@
 
 import { deleteCodeFile, updateCodeFile, updateCodeFileSettings } from '@/app/actions';
 import CopyButton from '@/components/ui/CopyButton';
+import ShareButton from '@/components/ui/ShareButton';
 import { MAX_CONTENT_LENGTH, SAVE_DEBOUNCE_MS } from '@/lib/constants';
 import { AppRoutes, SaveStatus } from '@/types/enums';
 import { FileEditorProps } from '@/types/types';
@@ -227,7 +228,8 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 			</div>
 
 			<div className="relative">
-				<div className="absolute top-3 right-3 z-10">
+				<div className="absolute top-3 right-3 z-10 flex items-center gap-2">
+					<ShareButton />
 					<CopyButton text={content} />
 				</div>
 				<CodeEditor
