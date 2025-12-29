@@ -10,7 +10,7 @@ export const metadata: Metadata = homeMetadata;
 export default async function Home() {
 	const session = await getServerSession(authOptions);
 	return (
-		<div className="flex flex-col items-center justify-center text-center gap-6">
+		<div className="flex flex-col items-center justify-center text-center gap-6 h-full">
 			<h1 className="text-5xl font-bold tracking-tight text-neutral-50">
 				Share Your Code Securely
 			</h1>
