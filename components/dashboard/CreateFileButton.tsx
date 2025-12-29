@@ -38,14 +38,15 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
 
 	return (
 		<Button
-			variant={ButtonVariant.PRIMARY}
+			variant={ButtonVariant.SUCCESS}
 			size={ButtonSize.MD}
 			onClick={handleCreate}
 			disabled={disabled}
 			isLoading={isPending}
+			aria-label={isPending ? 'Creating new file...' : 'Create new file'}
 		>
 			{!isPending && <PlusIcon className="w-5 h-5" />}
-			Create New File
+			Create New
 		</Button>
 	);
 }
