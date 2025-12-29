@@ -41,7 +41,7 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
 			disabled={disabled}
 			isLoading={isPending}
 		>
-			<PlusIcon className="w-5 h-5" />
+			{!isPending && <PlusIcon className="w-5 h-5" />}
 			Create New File
 		</Button>
 	);
