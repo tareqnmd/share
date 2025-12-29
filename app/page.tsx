@@ -1,11 +1,9 @@
-import { PlusIcon } from '@/components/icons';
+import CreateFileButton from '@/components/dashboard/CreateFileButton';
 import SignIn from '@/components/shared/SignIn';
-import { AppRoutes } from '@/enums/app-routes.enum';
 import { authOptions } from '@/lib/auth';
 import { homeMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
-import Link from 'next/link';
 
 export const metadata: Metadata = homeMetadata;
 
@@ -20,17 +18,7 @@ export default async function Home() {
 				A platform for developers to share snippets, collaborate in real-time, and manage their code
 				files with granular permissions.
 			</p>
-			{session ? (
-				<Link
-					href={AppRoutes.PUBLIC_FILES}
-					className="flex items-center gap-2 border border-neutral-700 bg-neutral-900 px-6 py-4 rounded-lg font-medium transition-colors hover:bg-neutral-800 text-neutral-50"
-				>
-					<PlusIcon className="w-5 h-5" />
-					Create a new file
-				</Link>
-			) : (
-				<SignIn />
-			)}
+			{session ? <CreateFileButton disabled={false} /> : <SignIn />}
 		</div>
 	);
 }
