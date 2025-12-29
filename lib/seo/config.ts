@@ -86,4 +86,9 @@ export const baseMetadata: Metadata = {
 		},
 	},
 	verification: {},
+	other: {
+		'author:image': siteConfig.authorImage,
+		'author:url': siteConfig.authorUrl,
+		'author:name': siteConfig.author,
+	},
 };
