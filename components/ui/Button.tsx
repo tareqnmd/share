@@ -22,6 +22,10 @@ const variantStyles: Record<ButtonVariant, string> = {
 		'bg-danger-600 text-white hover:bg-danger-700 focus-visible:ring-danger-400',
 	[ButtonVariant.GHOST]:
 		'bg-transparent text-neutral-300 hover:bg-neutral-800 hover:text-neutral-50 focus-visible:ring-neutral-400',
+	[ButtonVariant.OUTLINE_ACCENT]:
+		'bg-transparent text-accent-400 border border-accent-500/30 hover:bg-accent-500/10 hover:text-accent-300 hover:border-accent-500/50 focus-visible:ring-accent-500/30',
+	[ButtonVariant.OUTLINE_DANGER]:
+		'bg-transparent text-danger-400 border border-danger-500/30 hover:bg-danger-500/10 hover:text-danger-300 hover:border-danger-500/50 focus-visible:ring-danger-500/30',
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
