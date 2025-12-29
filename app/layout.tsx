@@ -3,7 +3,7 @@ import { Providers } from '@/components/Providers';
 import { baseMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Poppins } from 'next/font/google';
-import './globals.css';
+import '@/styles/globals.css';
 
 const poppins = Poppins({
 	subsets: ['latin'],
