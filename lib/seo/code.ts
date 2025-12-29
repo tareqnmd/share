@@ -26,8 +26,7 @@ export function generateCodeMetadata(file: CodeFileMetaData | null): Metadata {
 
 	const title = file.title || 'Untitled';
 	const languageDisplay = file.language.charAt(0).toUpperCase() + file.language.slice(1);
-	const authorName = file.createdBy?.name || 'Anonymous';
-	const description = `${languageDisplay} code snippet "${title}" shared by ${authorName} on ${siteConfig.name}. View, copy, or collaborate on this code file.`;
+	const description = `${languageDisplay} code snippet "${title}" shared by ${siteConfig.author} from ${siteConfig.name}. View, copy, or collaborate on this code file.`;
 
 	const isPublic = file.visibility === FileVisibility.PUBLIC;
 
@@ -70,7 +69,7 @@ export function generateCodeMetadata(file: CodeFileMetaData | null): Metadata {
 			follow: isPublic,
 		},
 		other: {
-			'article:author': authorName,
+			'article:author': siteConfig.author,
 		},
 	};
 }

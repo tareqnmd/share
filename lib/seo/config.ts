@@ -7,7 +7,10 @@ export const siteConfig = {
 		'A secure platform for developers to share code snippets, collaborate in real-time, and manage files with granular permissions.',
 	url: process.env.NEXT_PUBLIC_APP_URL || 'https://share.tareqnmd.com',
 	ogImage: '/assets/meta/og-image.png',
-	creator: '@share',
+	author: 'Tareq',
+	authorUrl: 'https://tareqnmd.com',
+	authorImage: '/assets/meta/author.webp',
+	creator: '@tareqnmd',
 	keywords: [
 		'code sharing',
 		'code snippets',
@@ -31,9 +34,9 @@ export const baseMetadata: Metadata = {
 	},
 	description: siteConfig.description,
 	keywords: siteConfig.keywords,
-	authors: [{ name: siteConfig.name }],
+	authors: [{ name: siteConfig.author, url: siteConfig.authorUrl }],
 	creator: siteConfig.creator,
-	publisher: siteConfig.name,
+	publisher: siteConfig.author,
 	formatDetection: {
 		email: false,
 		address: false,
