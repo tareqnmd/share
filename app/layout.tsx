@@ -33,11 +33,9 @@ export default function RootLayout({
 		>
 			<body suppressHydrationWarning>
 				<Providers>
-					<div className="min-h-screen flex flex-col">
+					<div className="min-h-screen grid grid-rows-[auto_1fr]">
 						<Navbar />
-						<main className="flex-1 py-6">
-							<div className="app-container">{children}</div>
-						</main>
+						<div className="py-6 app-container">{children}</div>
 					</div>
 				</Providers>
 			</body>
