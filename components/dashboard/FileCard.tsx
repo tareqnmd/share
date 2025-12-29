@@ -68,7 +68,7 @@ export default function FileCard({ id, title, language, visibility, updatedAt }:
 					<button
 						onClick={handleDelete}
 						disabled={isDeleting}
-						className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+						className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
 						aria-label="Delete file"
 					>
 						<TrashIcon className="w-4 h-4" />
