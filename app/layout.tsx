@@ -40,17 +40,7 @@ export default function RootLayout({
 							<div className="app-container">{children}</div>
 						</main>
 					</div>
-					<Toaster
-						theme="dark"
-						position="bottom-right"
-						toastOptions={{
-							style: {
-								background: 'var(--color-neutral-900)',
-								border: '1px solid var(--color-neutral-800)',
-								color: 'var(--color-neutral-50)',
-							},
-						}}
-					/>
+					<Toaster theme="dark" position="bottom-right" richColors={true} />
 				</Providers>
 			</body>
 		</html>
