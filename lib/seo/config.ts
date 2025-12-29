@@ -43,14 +43,6 @@ export const baseMetadata: Metadata = {
 		telephone: false,
 	},
 	manifest: '/manifest.webmanifest',
-	icons: {
-		icon: [
-			{ url: '/assets/meta/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-			{ url: '/assets/meta/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-		],
-		apple: '/assets/meta/apple-touch-icon.png',
-		shortcut: '/assets/meta/favicon.ico',
-	},
 	openGraph: {
 		type: 'website',
 		locale: 'en_US',
