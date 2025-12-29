@@ -85,7 +85,9 @@ export const baseMetadata: Metadata = {
 			'max-snippet': -1,
 		},
 	},
-	verification: {},
+	verification: {
+		google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+	},
 	other: {
 		'author:image': siteConfig.authorImage,
 		'author:url': siteConfig.authorUrl,
