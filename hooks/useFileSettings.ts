@@ -5,6 +5,7 @@ import { FileEditMode } from '@/enums/file-edit-mode.enum';
 import { FileVisibility } from '@/enums/file-visibility.enum';
 import { CodeFileInput } from '@/utils/validations';
 import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 interface UseFileSettingsOptions {
 	fileId: string;
@@ -37,8 +38,9 @@ export function useFileSettings({
 				if (updates.language) setLanguage(updates.language);
 				if (updates.visibility) setVisibility(updates.visibility);
 				if (updates.editMode) setEditMode(updates.editMode);
+				toast.success('Settings updated');
 			} catch {
-				alert('Failed to update settings');
+				toast.error('Failed to update settings');
 			}
 		},
 		[fileId]

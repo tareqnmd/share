@@ -11,6 +11,7 @@ import { FileEditorProps } from '@/interfaces/editor.types';
 import { CodeFileInput } from '@/utils/validations';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
+import { toast } from 'sonner';
 import CodeEditor from './CodeEditor';
 import FileControls from './FileControls';
 import FileHeader, { FileMetaInfo } from './FileHeader';
@@ -47,8 +48,9 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 			if (updates.language) setLanguage(updates.language);
 			if (updates.visibility) setVisibility(updates.visibility);
 			if (updates.editMode) setEditMode(updates.editMode);
+			toast.success('Settings updated');
 		} catch {
-			alert('Failed to update settings');
+			toast.error('Failed to update settings');
 		}
 	};
 
@@ -57,9 +59,10 @@ export default function FileEditor({ file, canEdit, currentUserId }: FileEditorP
 		startDeleteTransition(async () => {
 			try {
 				await deleteCodeFile(file._id);
+				toast.success('File deleted');
 				router.push(AppRoutes.DASHBOARD);
 			} catch {
-				alert('Failed to delete');
+				toast.error('Failed to delete file');
 			}
 		});
 	};

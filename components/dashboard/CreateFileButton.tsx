@@ -11,6 +11,7 @@ import { FileVisibility } from '@/enums/file-visibility.enum';
 import { LANGUAGE_OPTIONS } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
+import { toast } from 'sonner';
 
 export default function CreateFileButton({ disabled }: { disabled: boolean }) {
 	const [isPending, startTransition] = useTransition();
@@ -28,7 +29,9 @@ export default function CreateFileButton({ disabled }: { disabled: boolean }) {
 				});
 				router.push(`${AppRoutes.CODE}/${id}`);
 			} catch (error) {
-				alert('Failed to create file: ' + (error as Error).message);
+				toast.error('Failed to create file', {
+					description: (error as Error).message,
+				});
 			}
 		});
 	};

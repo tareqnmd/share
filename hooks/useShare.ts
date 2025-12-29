@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 const SHARE_TIMEOUT_MS = 2000;
 
@@ -16,6 +17,7 @@ export function useShare() {
 					title: document.title,
 					url: url,
 				});
+				toast.success('Shared successfully');
 				return true;
 			} catch (err) {
 				if ((err as Error).name === 'AbortError') return false;
@@ -26,6 +28,7 @@ export function useShare() {
 			await navigator.clipboard.writeText(url);
 			setShared(true);
 			setTimeout(() => setShared(false), SHARE_TIMEOUT_MS);
+			toast.success('Link copied to clipboard');
 			return true;
 		} catch {
 			const textarea = document.createElement('textarea');
@@ -38,6 +41,7 @@ export function useShare() {
 			document.body.removeChild(textarea);
 			setShared(true);
 			setTimeout(() => setShared(false), SHARE_TIMEOUT_MS);
+			toast.success('Link copied to clipboard');
 			return true;
 		}
 	}, []);

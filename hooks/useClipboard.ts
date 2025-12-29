@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 
 const COPY_TIMEOUT_MS = 2000;
 
@@ -12,6 +13,7 @@ export function useClipboard() {
 			await navigator.clipboard.writeText(text);
 			setCopied(true);
 			setTimeout(() => setCopied(false), COPY_TIMEOUT_MS);
+			toast.success('Copied to clipboard');
 			return true;
 		} catch {
 			const textarea = document.createElement('textarea');
@@ -24,6 +26,7 @@ export function useClipboard() {
 			document.body.removeChild(textarea);
 			setCopied(true);
 			setTimeout(() => setCopied(false), COPY_TIMEOUT_MS);
+			toast.success('Copied to clipboard');
 			return true;
 		}
 	}, []);
