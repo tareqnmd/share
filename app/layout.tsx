@@ -3,7 +3,6 @@ import { Providers } from '@/components/Providers';
 import { baseMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Poppins } from 'next/font/google';
-import { Toaster } from 'sonner';
 import './globals.css';
 
 const poppins = Poppins({
@@ -40,7 +39,6 @@ export default function RootLayout({
 							<div className="app-container">{children}</div>
 						</main>
 					</div>
-					<Toaster theme="dark" position="bottom-right" richColors={true} />
 				</Providers>
 			</body>
 		</html>

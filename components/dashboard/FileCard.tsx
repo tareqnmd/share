@@ -1,15 +1,49 @@
+'use client';
+
+import { deleteCodeFile } from '@/app/actions/file.actions';
+import { TrashIcon } from '@/components/icons';
 import { AppRoutes } from '@/enums/app-routes.enum';
 import { FileVisibility } from '@/enums/file-visibility.enum';
 import { FileCardProps } from '@/interfaces/file-card.types';
 import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 export default function FileCard({ id, title, language, visibility, updatedAt }: FileCardProps) {
 	const isPublic = visibility === FileVisibility.PUBLIC;
+	const [isDeleting, setIsDeleting] = useState(false);
+
+	const handleDelete = async (e: React.MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		toast.warning(`Delete "${title}"?`, {
+			description: 'This action cannot be undone.',
+			duration: 10000,
+			action: {
+				label: 'Delete',
+				onClick: async () => {
+					setIsDeleting(true);
+					try {
+						await deleteCodeFile(id);
+						toast.success('File deleted successfully');
+					} catch (error) {
+						toast.error(error instanceof Error ? error.message : 'Failed to delete file');
+						setIsDeleting(false);
+					}
+				},
+			},
+			cancel: {
+				label: 'Cancel',
+				onClick: () => {},
+			},
+		});
+	};
 
 	return (
 		<Link
 			href={`${AppRoutes.CODE}/${id}`}
-			className="group relative flex flex-col bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-all duration-300 hover:border-neutral-700 hover:shadow-xl hover:shadow-black/40 hover:-translate-y-0.5"
+			className={`group relative flex flex-col bg-neutral-900 border border-neutral-800 rounded-xl overflow-hidden transition-all duration-300 hover:border-neutral-700 hover:shadow-xl hover:shadow-black/40 hover:-translate-y-0.5 ${isDeleting ? 'opacity-50 pointer-events-none' : ''}`}
 		>
 			<div className="flex items-center justify-between px-4 py-2.5 bg-neutral-800/60 border-b border-neutral-800">
 				<div className="flex items-center gap-2">
@@ -18,18 +52,28 @@ export default function FileCard({ id, title, language, visibility, updatedAt }:
 						{language}
 					</span>
 				</div>
-				<span
-					className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-full ${
-						isPublic
-							? 'bg-success-500/15 text-success-400 ring-1 ring-success-500/30'
-							: 'bg-neutral-700/50 text-neutral-400 ring-1 ring-neutral-600/50'
-					}`}
-				>
+				<div className="flex items-center gap-2">
 					<span
-						className={`w-1.5 h-1.5 rounded-full ${isPublic ? 'bg-success-400' : 'bg-neutral-500'}`}
-					/>
-					{visibility}
-				</span>
+						className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide rounded-full ${
+							isPublic
+								? 'bg-success-500/15 text-success-400 ring-1 ring-success-500/30'
+								: 'bg-neutral-700/50 text-neutral-400 ring-1 ring-neutral-600/50'
+						}`}
+					>
+						<span
+							className={`w-1.5 h-1.5 rounded-full ${isPublic ? 'bg-success-400' : 'bg-neutral-500'}`}
+						/>
+						{visibility}
+					</span>
+					<button
+						onClick={handleDelete}
+						disabled={isDeleting}
+						className="p-1.5 rounded-lg text-neutral-500 hover:text-red-400 hover:bg-red-500/10 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+						aria-label="Delete file"
+					>
+						<TrashIcon className="w-4 h-4" />
+					</button>
+				</div>
 			</div>
 
 			<div className="flex flex-col flex-1 p-4 gap-3">
