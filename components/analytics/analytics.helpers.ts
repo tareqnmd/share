@@ -1,4 +1,4 @@
-import { ANALYTICS_CONFIG } from '@/constant';
+import { analyticsConfig } from '@/lib/seo/config';
 
 type GtagCommand = 'event' | 'config' | 'set' | 'js' | 'consent';
 type GtagConfig = Record<string, string | number | boolean | Date | undefined>;
@@ -18,7 +18,7 @@ interface AnalyticsEvent {
 	[key: string]: string | number | boolean | undefined;
 }
 
-const GA4_ID = ANALYTICS_CONFIG.ga4Id;
+const GA4_ID = analyticsConfig.ga4Id;
 const IS_ENABLED = !!GA4_ID;
 
 function trackEvent({ action, category, label, value, ...additionalParams }: AnalyticsEvent) {

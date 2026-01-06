@@ -1,12 +1,12 @@
 'use client';
 
-import { analytics } from '@/lib/seo/config';
+import { analyticsConfig } from '@/lib/seo/config';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 import { Suspense, useEffect } from 'react';
 import { pageview } from '../analytics.helpers';
 
-const GA4_ID = analytics.ga4Id;
+const GA4_ID = analyticsConfig.ga4Id;
 const IS_ENABLED = !!GA4_ID;
 
 function AnalyticsTracker() {

@@ -87,7 +87,7 @@ export const baseMetadata: Metadata = {
 	},
 };
 
-export const analytics = {
+export const analyticsConfig = {
 	ga4Id: process.env.NEXT_PUBLIC_GA4_ID,
 	googleVerification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
 };
