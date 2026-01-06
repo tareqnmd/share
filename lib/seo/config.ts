@@ -78,11 +78,16 @@ export const baseMetadata: Metadata = {
 		},
 	},
 	verification: {
-		google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+		google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
 	},
 	other: {
 		'author:image': siteConfig.authorImage,
 		'author:url': siteConfig.authorUrl,
 		'author:name': siteConfig.author,
 	},
+};
+
+export const analytics = {
+	ga4Id: process.env.NEXT_PUBLIC_GA4_ID,
+	googleVerification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
 };

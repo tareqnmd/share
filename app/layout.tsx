@@ -1,9 +1,11 @@
+import Analytics from '@/components/analytics/components/Analytics';
 import Navbar from '@/components/Navbar';
 import { Providers } from '@/components/Providers';
-import { baseMetadata } from '@/lib/seo';
+import StructuredData from '@/components/StructuredData';
+import { baseMetadata, generateOrganizationSchema, generateWebsiteSchema } from '@/lib/seo';
+import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Poppins } from 'next/font/google';
-import '@/styles/globals.css';
 
 const poppins = Poppins({
 	subsets: ['latin'],
@@ -25,12 +27,19 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const organizationSchema = generateOrganizationSchema();
+	const websiteSchema = generateWebsiteSchema();
+
 	return (
 		<html
 			lang="en"
 			className={`${poppins.variable} ${jetbrainsMono.variable}`}
 			suppressHydrationWarning
 		>
+			<head>
+				<StructuredData data={[organizationSchema, websiteSchema]} />
+				<Analytics />
+			</head>
 			<body suppressHydrationWarning>
 				<Providers>
 					<div className="min-h-screen grid grid-rows-[auto_1fr]">
