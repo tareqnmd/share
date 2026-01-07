@@ -7,9 +7,10 @@ export const siteConfig = {
 		'A secure platform for developers to share code snippets, collaborate in real-time, and manage files with granular permissions.',
 	url: process.env.NEXT_PUBLIC_APP_URL || 'https://share.tareqnmd.com',
 	ogImage: '/assets/meta/og-image.png',
-	author: 'Tareq',
+	author: 'Md Tareq',
 	authorUrl: 'https://tareqnmd.com',
 	authorImage: '/assets/meta/author.webp',
+	authorUsername: 'tareqnmd',
 	creator: '@tareqnmd',
 	keywords: [
 		'code sharing',
@@ -25,6 +26,9 @@ export const siteConfig = {
 		'Python',
 	] as string[],
 };
+
+const ogImageUrl = new URL(siteConfig.ogImage, siteConfig.url).toString();
+const authorImageUrl = new URL(siteConfig.authorImage, siteConfig.url).toString();
 
 export const baseMetadata: Metadata = {
 	metadataBase: new URL(siteConfig.url),
@@ -52,7 +56,7 @@ export const baseMetadata: Metadata = {
 		description: siteConfig.description,
 		images: [
 			{
-				url: siteConfig.ogImage,
+				url: ogImageUrl,
 				width: 1200,
 				height: 630,
 				alt: `${siteConfig.name} - Share Code Securely`,
@@ -63,7 +67,7 @@ export const baseMetadata: Metadata = {
 		card: 'summary_large_image',
 		title: siteConfig.name,
 		description: siteConfig.description,
-		images: [siteConfig.ogImage],
+		images: [ogImageUrl],
 		creator: siteConfig.creator,
 	},
 	robots: {
@@ -81,9 +85,10 @@ export const baseMetadata: Metadata = {
 		google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION_CODE,
 	},
 	other: {
-		'author:image': siteConfig.authorImage,
+		'author:image': authorImageUrl,
 		'author:url': siteConfig.authorUrl,
 		'author:name': siteConfig.author,
+		'author:username': siteConfig.authorUsername,
 	},
 };
 

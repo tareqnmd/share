@@ -27,6 +27,8 @@ export function generateCodeMetadata(file: CodeFileMetaData | null): Metadata {
 	const title = file.title || 'Untitled';
 	const languageDisplay = file.language.charAt(0).toUpperCase() + file.language.slice(1);
 	const description = `${languageDisplay} code snippet "${title}" shared by ${siteConfig.author} from ${siteConfig.name}. View, copy, or collaborate on this code file.`;
+	const ogImageUrl = new URL(siteConfig.ogImage, siteConfig.url).toString();
+	const authorImageUrl = new URL(siteConfig.authorImage, siteConfig.url).toString();
 
 	const isPublic = file.visibility === FileVisibility.PUBLIC;
 
@@ -46,9 +48,10 @@ export function generateCodeMetadata(file: CodeFileMetaData | null): Metadata {
 			description: description,
 			url: `${siteConfig.url}/code/${file.id}`,
 			type: 'article',
+			authors: [siteConfig.authorUrl],
 			images: [
 				{
-					url: siteConfig.ogImage,
+					url: ogImageUrl,
 					width: 1200,
 					height: 630,
 					alt: `${title} - ${languageDisplay} Code Snippet`,
@@ -59,7 +62,8 @@ export function generateCodeMetadata(file: CodeFileMetaData | null): Metadata {
 			card: 'summary_large_image',
 			title: `${title} | ${siteConfig.name}`,
 			description: description,
-			images: [siteConfig.ogImage],
+			images: [ogImageUrl],
+			creator: siteConfig.creator,
 		},
 		alternates: {
 			canonical: `${siteConfig.url}/code/${file.id}`,
@@ -69,7 +73,9 @@ export function generateCodeMetadata(file: CodeFileMetaData | null): Metadata {
 			follow: isPublic,
 		},
 		other: {
-			'article:author': siteConfig.author,
+			'article:author': siteConfig.authorUrl,
+			'author:username': siteConfig.authorUsername,
+			'author:image': authorImageUrl,
 		},
 	};
 }
